@@ -14,6 +14,8 @@ namespace cs_ydl
 
             savePathTextBox.Enabled = false;
             browseBtn.Enabled = false;
+
+            CheckYtdlpPath();
         }
 
         // 保存と読込用
@@ -78,22 +80,22 @@ namespace cs_ydl
 
         // configフォルダ選択ボタン
         private void selectConfigFolderBtn_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Select Config Folder";
+                if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    using (var dialog = new FolderBrowserDialog())
-                    {
-                        dialog.Description = "Select Config Folder";
-                        if (dialog.ShowDialog() == DialogResult.OK)
-                        {
-                            string selectedPath = dialog.SelectedPath;
+                    string selectedPath = dialog.SelectedPath;
 
-                            // 設定に保存
-                            Properties.Settings.Default.ConfigFolderPath = selectedPath;
-                            Properties.Settings.Default.Save();
+                    // 設定に保存
+                    Properties.Settings.Default.ConfigFolderPath = selectedPath;
+                    Properties.Settings.Default.Save();
 
-                            LoadConfigs();
-                        }
-                    }
+                    LoadConfigs();
                 }
+            }
+        }
 
         // 最後に選択した.configを保存
         private void confCmbBx_SelectedIndexChanged(object sender, EventArgs e)
@@ -102,6 +104,20 @@ namespace cs_ydl
             {
                 Properties.Settings.Default.LastConfigName = confCmbBx.SelectedItem.ToString() ?? "";
                 Properties.Settings.Default.Save();
+            }
+        }
+
+        // 設定ツールストリップボタン
+        private void settingToolStripBtn_Click(object sender, EventArgs e)
+        {
+            using (SettingForm settingForm = new SettingForm())
+            {
+                settingForm.ShowDialog();
+
+                //if (settingForm.ShowDialog() == DialogResult.OK)
+                //{
+                //    // 設定が保存された後の処理（必要なら）
+                //}
             }
         }
 
@@ -213,9 +229,16 @@ namespace cs_ydl
         {
             try
             {
+                string exePath = Properties.Settings.Default.YtDlpPath;
+
+                if (string.IsNullOrWhiteSpace(exePath) || !File.Exists(exePath))
+                {
+                    throw new FileNotFoundException("yt-dlp.exe が見つかりません。設定画面でパスを指定してください。");
+                }
+
                 ProcessStartInfo psi = new ProcessStartInfo
                 {
-                    FileName = Path.Combine(Application.StartupPath, "yt-dlp.exe"),
+                    FileName = exePath,
                     Arguments = arguments,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -238,6 +261,28 @@ namespace cs_ydl
             {
                 {
                     MessageBox.Show("エラー： " + ex.Message);
+                }
+            }
+        }
+
+        // yt-dlpパスチェック関数
+        private void CheckYtdlpPath()
+        {
+            string exePath = Properties.Settings.Default.YtDlpPath;
+            if (string.IsNullOrWhiteSpace(exePath) || !File.Exists(exePath))
+            {
+                var result = MessageBox.Show(
+                    "yt-dlp.exe のパスが設定されていません。\n設定画面を開きますか？",
+                    "yt-dlp パス未設定",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+                
+                if (result == DialogResult.Yes)
+                {
+                    using (SettingForm settingForm = new SettingForm())
+                    {
+                        settingForm.ShowDialog();
+                    }
                 }
             }
         }

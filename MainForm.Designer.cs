@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             urlTextBox = new TextBox();
             dlBtn = new Button();
             confCmbBx = new ComboBox();
@@ -43,11 +44,14 @@
             pasteBtn = new Button();
             urlResetBtn = new Button();
             selectConfigFolderBtn = new Button();
+            toolStrip1 = new ToolStrip();
+            settingToolStripBtn = new ToolStripButton();
+            toolStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // urlTextBox
             // 
-            urlTextBox.Location = new Point(12, 80);
+            urlTextBox.Location = new Point(12, 98);
             urlTextBox.Name = "urlTextBox";
             urlTextBox.Size = new Size(417, 26);
             urlTextBox.TabIndex = 9;
@@ -56,9 +60,9 @@
             // dlBtn
             // 
             dlBtn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            dlBtn.Location = new Point(435, 80);
+            dlBtn.Location = new Point(437, 98);
             dlBtn.Name = "dlBtn";
-            dlBtn.Size = new Size(82, 59);
+            dlBtn.Size = new Size(83, 59);
             dlBtn.TabIndex = 8;
             dlBtn.Text = "DL";
             dlBtn.Click += dlBtn_Click;
@@ -67,7 +71,7 @@
             // 
             confCmbBx.DropDownStyle = ComboBoxStyle.DropDownList;
             confCmbBx.FormattingEnabled = true;
-            confCmbBx.Location = new Point(12, 112);
+            confCmbBx.Location = new Point(12, 130);
             confCmbBx.Name = "confCmbBx";
             confCmbBx.Size = new Size(374, 27);
             confCmbBx.TabIndex = 2;
@@ -106,7 +110,7 @@
             // 
             // updateBtn
             // 
-            updateBtn.Location = new Point(390, 12);
+            updateBtn.Location = new Point(390, 28);
             updateBtn.Name = "updateBtn";
             updateBtn.Size = new Size(127, 29);
             updateBtn.TabIndex = 6;
@@ -149,7 +153,7 @@
             // 
             // pasteBtn
             // 
-            pasteBtn.Location = new Point(338, 45);
+            pasteBtn.Location = new Point(338, 63);
             pasteBtn.Name = "pasteBtn";
             pasteBtn.Size = new Size(91, 29);
             pasteBtn.TabIndex = 11;
@@ -159,7 +163,7 @@
             // 
             // urlResetBtn
             // 
-            urlResetBtn.Location = new Point(241, 45);
+            urlResetBtn.Location = new Point(241, 63);
             urlResetBtn.Name = "urlResetBtn";
             urlResetBtn.Size = new Size(91, 29);
             urlResetBtn.TabIndex = 12;
@@ -169,7 +173,7 @@
             // 
             // selectConfigFolderBtn
             // 
-            selectConfigFolderBtn.Location = new Point(390, 112);
+            selectConfigFolderBtn.Location = new Point(392, 134);
             selectConfigFolderBtn.Name = "selectConfigFolderBtn";
             selectConfigFolderBtn.Size = new Size(39, 23);
             selectConfigFolderBtn.TabIndex = 13;
@@ -177,11 +181,31 @@
             selectConfigFolderBtn.UseVisualStyleBackColor = true;
             selectConfigFolderBtn.Click += selectConfigFolderBtn_Click;
             // 
+            // toolStrip1
+            // 
+            toolStrip1.Items.AddRange(new ToolStripItem[] { settingToolStripBtn });
+            toolStrip1.Location = new Point(0, 0);
+            toolStrip1.Name = "toolStrip1";
+            toolStrip1.Size = new Size(528, 26);
+            toolStrip1.TabIndex = 14;
+            toolStrip1.Text = "toolStrip1";
+            // 
+            // settingToolStripBtn
+            // 
+            settingToolStripBtn.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            settingToolStripBtn.Image = (Image)resources.GetObject("settingToolStripBtn.Image");
+            settingToolStripBtn.ImageTransparentColor = Color.Magenta;
+            settingToolStripBtn.Name = "settingToolStripBtn";
+            settingToolStripBtn.Size = new Size(41, 23);
+            settingToolStripBtn.Text = "設定";
+            settingToolStripBtn.Click += settingToolStripBtn_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(528, 622);
+            Controls.Add(toolStrip1);
             Controls.Add(selectConfigFolderBtn);
             Controls.Add(urlResetBtn);
             Controls.Add(pasteBtn);
@@ -197,7 +221,9 @@
             Controls.Add(urlTextBox);
             KeyPreview = true;
             Name = "MainForm";
-            Text = "Download";
+            Text = "cs_ydl";
+            toolStrip1.ResumeLayout(false);
+            toolStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -218,5 +244,7 @@
         private Button pasteBtn;
         private Button urlResetBtn;
         private Button selectConfigFolderBtn;
+        private ToolStrip toolStrip1;
+        private ToolStripButton settingToolStripBtn;
     }
 }
