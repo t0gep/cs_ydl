@@ -1,4 +1,4 @@
-using System.Diagnostics;
+ï»¿using System.Diagnostics;
 
 namespace cs_ydl
 {
@@ -7,14 +7,14 @@ namespace cs_ydl
         public MainForm()
         {
             InitializeComponent();
-            LoadConfigs(); // config‚Ìƒ[ƒh
-            LoadLastSavePath(); // ‘O‰ñ‚ÌƒpƒX‚ğ“Ç‚İ‚Ş
+            LoadConfigs(); // configã®ãƒ­ãƒ¼ãƒ‰
+            LoadLastSavePath(); // å‰å›ã®ãƒ‘ã‚¹ã‚’èª­ã¿è¾¼ã‚€
 
             savePathTextBox.Enabled = false;
             browseBtn.Enabled = false;
         }
 
-        // •Û‘¶‚Æ“Ç—p
+        // ä¿å­˜ã¨èª­è¾¼ç”¨
         private const string SavePathSettingKey = "LastSavePath";
 
         private void SaveLastSavePath(string path)
@@ -24,7 +24,7 @@ namespace cs_ydl
         }
 
 
-        // ‘O‰ñg‚Á‚½ƒpƒX‚ğ•Û‘¶
+        // å‰å›ä½¿ã£ãŸãƒ‘ã‚¹ã‚’ä¿å­˜
 
         private void LoadLastSavePath()
         {
@@ -51,13 +51,13 @@ namespace cs_ydl
             }
         }
 
-        // ƒAƒbƒvƒf[ƒgƒ{ƒ^ƒ“
+        // ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆãƒœã‚¿ãƒ³
         private void updateBtn_Click(object sender, EventArgs e)
         {
             RunYtdlp("-U");
         }
 
-        // ƒ`ƒFƒbƒNƒ{ƒbƒNƒX‚Å•Û‘¶æ—LŒø‰»
+        // ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹ã§ä¿å­˜å…ˆæœ‰åŠ¹åŒ–
         private void cUseCustomPath_CheckedChanged(object sender, EventArgs e)
         {
             bool enabled = cUseCustomPath.Checked;
@@ -65,7 +65,13 @@ namespace cs_ydl
             browseBtn.Enabled = enabled;
         }
 
-        // ƒtƒHƒ‹ƒ_‘I‘ğ
+        // ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹ã§Archiveã‚’ç„¡åŠ¹åŒ–
+        private void cbDisableArchive_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        // ãƒ•ã‚©ãƒ«ãƒ€é¸æŠ
         private void browseBtn_Click(object sender, EventArgs e)
         {
             using (FolderBrowserDialog dlg = new FolderBrowserDialog())
@@ -78,28 +84,28 @@ namespace cs_ydl
             }
         }
 
-        // ƒ_ƒEƒ“ƒ[ƒhƒ{ƒ^ƒ“ or enterƒL[
+        // ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒœã‚¿ãƒ³ or enterã‚­ãƒ¼
         private void dlBtn_Click(Object sender, EventArgs e) => StartDL();
         private void urlTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) StartDL();
         }
 
-        // ÀsƒƒCƒ“ˆ—
+        // å®Ÿè¡Œãƒ¡ã‚¤ãƒ³å‡¦ç†
         private void StartDL()
-        {   
+        {
             string url = urlTextBox.Text.Trim();
             string savePath = savePathTextBox.Text.Trim();
             string? config = confCmbBx.SelectedItem?.ToString();
             if (string.IsNullOrWhiteSpace(url))
             {
-                MessageBox.Show("URL‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢");
+                MessageBox.Show("URLã‚’å…¥åŠ›ã—ã¦ãã ã•ã„");
                 return;
             }
 
             if (cUseCustomPath.Checked && string.IsNullOrWhiteSpace(savePath))
             {
-                MessageBox.Show("•Û‘¶æ‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢", "Œx", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("ä¿å­˜å…ˆã‚’æŒ‡å®šã—ã¦ãã ã•ã„", "è­¦å‘Š", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -120,12 +126,17 @@ namespace cs_ydl
                 args += "--no-embed-metadata ";
             }
 
+            if (cbDisableArchive.Checked)
+            {
+                args += "--no-download-archive ";
+            }
+
             args += $"\"{url}\" ";
 
             RunYtdlp(args);
         }
 
-        // yt-dlpÀsŠÖ”@{@ƒƒOo—Í
+        // yt-dlpå®Ÿè¡Œé–¢æ•°ã€€ï¼‹ã€€ãƒ­ã‚°å‡ºåŠ›
         private void RunYtdlp(string arguments)
         {
             try
@@ -142,9 +153,9 @@ namespace cs_ydl
                 Process? proc = Process.Start(psi);
                 if (proc == null)
                 {
-                    throw new InvalidOperationException("yt-dlp ‚Ì‹N“®‚É¸”s‚µ‚Ü‚µ‚½B");
+                    throw new InvalidOperationException("yt-dlp ã®èµ·å‹•ã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
                 }
-                using(proc)
+                using (proc)
                 {
                     string output = proc.StandardOutput.ReadToEnd();
                     proc.WaitForExit();
@@ -154,9 +165,11 @@ namespace cs_ydl
             catch (Exception ex)
             {
                 {
-                    MessageBox.Show("ƒGƒ‰[F " + ex.Message);
+                    MessageBox.Show("ã‚¨ãƒ©ãƒ¼ï¼š " + ex.Message);
                 }
             }
         }
+
+
     }
 }

@@ -39,22 +39,23 @@
             logTextBox = new RichTextBox();
             cbDisableMetadata = new CheckBox();
             metadataCheck = new ToolTip(components);
+            cbDisableArchive = new CheckBox();
             SuspendLayout();
             // 
             // urlTextBox
             // 
-            urlTextBox.Location = new Point(12, 80);
+            urlTextBox.Location = new Point(12, 84);
             urlTextBox.Name = "urlTextBox";
-            urlTextBox.Size = new Size(417, 26);
+            urlTextBox.Size = new Size(417, 27);
             urlTextBox.TabIndex = 9;
             urlTextBox.KeyDown += urlTextBox_KeyDown;
             // 
             // dlBtn
             // 
             dlBtn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            dlBtn.Location = new Point(435, 47);
+            dlBtn.Location = new Point(435, 49);
             dlBtn.Name = "dlBtn";
-            dlBtn.Size = new Size(82, 59);
+            dlBtn.Size = new Size(82, 62);
             dlBtn.TabIndex = 8;
             dlBtn.Text = "DL";
             dlBtn.Click += dlBtn_Click;
@@ -63,26 +64,26 @@
             // 
             confCmbBx.DropDownStyle = ComboBoxStyle.DropDownList;
             confCmbBx.FormattingEnabled = true;
-            confCmbBx.Location = new Point(12, 47);
+            confCmbBx.Location = new Point(12, 49);
             confCmbBx.Name = "confCmbBx";
-            confCmbBx.Size = new Size(417, 27);
+            confCmbBx.Size = new Size(417, 28);
             confCmbBx.TabIndex = 2;
             // 
             // savePathTextBox
             // 
             savePathTextBox.Enabled = false;
-            savePathTextBox.Location = new Point(107, 227);
+            savePathTextBox.Location = new Point(107, 239);
             savePathTextBox.Name = "savePathTextBox";
             savePathTextBox.ReadOnly = true;
-            savePathTextBox.Size = new Size(365, 26);
+            savePathTextBox.Size = new Size(365, 27);
             savePathTextBox.TabIndex = 3;
             // 
             // browseBtn
             // 
             browseBtn.Enabled = false;
-            browseBtn.Location = new Point(478, 230);
+            browseBtn.Location = new Point(478, 242);
             browseBtn.Name = "browseBtn";
-            browseBtn.Size = new Size(39, 23);
+            browseBtn.Size = new Size(39, 24);
             browseBtn.TabIndex = 4;
             browseBtn.Text = "...";
             browseBtn.UseVisualStyleBackColor = true;
@@ -91,9 +92,9 @@
             // cUseCustomPath
             // 
             cUseCustomPath.AutoSize = true;
-            cUseCustomPath.Location = new Point(12, 230);
+            cUseCustomPath.Location = new Point(12, 242);
             cUseCustomPath.Name = "cUseCustomPath";
-            cUseCustomPath.Size = new Size(89, 23);
+            cUseCustomPath.Size = new Size(95, 24);
             cUseCustomPath.TabIndex = 5;
             cUseCustomPath.Text = "パスを指定";
             cUseCustomPath.UseVisualStyleBackColor = true;
@@ -101,9 +102,9 @@
             // 
             // updateBtn
             // 
-            updateBtn.Location = new Point(390, 12);
+            updateBtn.Location = new Point(390, 13);
             updateBtn.Name = "updateBtn";
-            updateBtn.Size = new Size(127, 29);
+            updateBtn.Size = new Size(127, 31);
             updateBtn.TabIndex = 6;
             updateBtn.Text = "yt-dlpをアップデート";
             updateBtn.UseVisualStyleBackColor = true;
@@ -112,30 +113,42 @@
             // logTextBox
             // 
             logTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            logTextBox.Location = new Point(12, 259);
+            logTextBox.Location = new Point(12, 273);
             logTextBox.Name = "logTextBox";
             logTextBox.ReadOnly = true;
             logTextBox.ScrollBars = RichTextBoxScrollBars.Vertical;
-            logTextBox.Size = new Size(505, 351);
+            logTextBox.Size = new Size(505, 369);
             logTextBox.TabIndex = 7;
             logTextBox.Text = "";
             // 
             // cbDisableMetadata
             // 
             cbDisableMetadata.AutoSize = true;
-            cbDisableMetadata.Location = new Point(12, 201);
+            cbDisableMetadata.Location = new Point(12, 212);
             cbDisableMetadata.Name = "cbDisableMetadata";
-            cbDisableMetadata.Size = new Size(164, 23);
+            cbDisableMetadata.Size = new Size(175, 24);
             cbDisableMetadata.TabIndex = 10;
             cbDisableMetadata.Text = "メタデータを埋め込まない";
             metadataCheck.SetToolTip(cbDisableMetadata, "※ このオプションは .conf に --embed-metadata がある場合でも無効化できます");
             cbDisableMetadata.UseVisualStyleBackColor = true;
             // 
-            // Form1
+            // cbDisableArchive
             // 
-            AutoScaleDimensions = new SizeF(8F, 19F);
+            cbDisableArchive.AutoSize = true;
+            cbDisableArchive.Location = new Point(12, 182);
+            cbDisableArchive.Name = "cbDisableArchive";
+            cbDisableArchive.Size = new Size(176, 24);
+            cbDisableArchive.TabIndex = 10;
+            cbDisableArchive.Text = "Arvchiveに書き込まない";
+            cbDisableArchive.UseVisualStyleBackColor = true;
+            cbDisableArchive.CheckedChanged += cbDisableArchive_CheckedChanged;
+            // 
+            // MainForm
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(528, 622);
+            ClientSize = new Size(528, 655);
+            Controls.Add(cbDisableArchive);
             Controls.Add(cbDisableMetadata);
             Controls.Add(logTextBox);
             Controls.Add(updateBtn);
@@ -146,7 +159,7 @@
             Controls.Add(dlBtn);
             Controls.Add(urlTextBox);
             KeyPreview = true;
-            Name = "Form1";
+            Name = "MainForm";
             Text = "Download";
             ResumeLayout(false);
             PerformLayout();
@@ -164,5 +177,6 @@
         private RichTextBox logTextBox;
         private CheckBox cbDisableMetadata;
         private ToolTip metadataCheck;
+        private CheckBox cbDisableArchive;
     }
 }
