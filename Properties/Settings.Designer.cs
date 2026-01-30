@@ -34,5 +34,41 @@ namespace cs_ydl.Properties {
                 this["LastSavePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ConfigFolderPath {
+            get {
+                return ((string)(this["ConfigFolderPath"]));
+            }
+            set {
+                this["ConfigFolderPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastConfigName {
+            get {
+                return ((string)(this["LastConfigName"]));
+            }
+            set {
+                this["LastConfigName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string YtDlpPath {
+            get {
+                return ((string)(this["YtDlpPath"]));
+            }
+            set {
+                this["YtDlpPath"] = value;
+            }
+        }
     }
 }

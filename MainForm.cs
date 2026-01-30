@@ -7,8 +7,10 @@ namespace cs_ydl
         public MainForm()
         {
             InitializeComponent();
-            LoadConfigs(); // configのロード
+
+
             LoadLastSavePath(); // 前回のパスを読み込む
+            LoadConfigs(); // configのロード
 
             savePathTextBox.Enabled = false;
             browseBtn.Enabled = false;
@@ -24,30 +26,82 @@ namespace cs_ydl
         }
 
 
-        // 前回使ったパスを保存
+        // 前回使った保存先パスを保存
 
         private void LoadLastSavePath()
         {
-            if (Properties.Settings.Default[SavePathSettingKey] == null)
+            var val = Properties.Settings.Default[SavePathSettingKey];
+
+            if (val != null)
             {
-                savePathTextBox.Text = Properties.Settings.Default[SavePathSettingKey].ToString();
+                savePathTextBox.Text = val.ToString();
             }
         }
 
+        // configフォルダから設定をロード
         private void LoadConfigs()
         {
-            string configFolder = Path.Combine(Application.StartupPath, "C://yt-dlp//configs");
-            if (!Directory.Exists(configFolder)) return;
+            string configFolder = Properties.Settings.Default.ConfigFolderPath;
 
-            string[] configs = Directory.GetFiles(configFolder, "*.conf");
-            foreach (string config in configs)
+            if (string.IsNullOrWhiteSpace(configFolder) || !Directory.Exists(configFolder))
             {
-                confCmbBx.Items.Add(config);
+                return;
             }
 
-            if (confCmbBx.Items.Count > 0)
+            confCmbBx.Items.Clear();
+
+            string[] configs = Directory.GetFiles(configFolder, "*.conf");
+
+            foreach (string config in configs)
             {
-                confCmbBx.SelectedIndex = 4;
+                confCmbBx.Items.Add(Path.GetFileName(config));
+            }
+
+            if (confCmbBx.Items.Count == 0)
+            {
+                return;
+            }
+
+            // 最後に選択した.configを選択
+            string lastConfigName = Properties.Settings.Default.LastConfigName;
+
+            if (!string.IsNullOrEmpty(lastConfigName) && confCmbBx.Items.Contains(lastConfigName))
+            {
+                confCmbBx.SelectedItem = lastConfigName;
+            }
+            else
+            {
+                confCmbBx.SelectedIndex = 0;
+            }
+        }
+
+
+        // configフォルダ選択ボタン
+        private void selectConfigFolderBtn_Click(object sender, EventArgs e)
+                {
+                    using (var dialog = new FolderBrowserDialog())
+                    {
+                        dialog.Description = "Select Config Folder";
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                        {
+                            string selectedPath = dialog.SelectedPath;
+
+                            // 設定に保存
+                            Properties.Settings.Default.ConfigFolderPath = selectedPath;
+                            Properties.Settings.Default.Save();
+
+                            LoadConfigs();
+                        }
+                    }
+                }
+
+        // 最後に選択した.configを保存
+        private void confCmbBx_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (confCmbBx.SelectedItem != null)
+            {
+                Properties.Settings.Default.LastConfigName = confCmbBx.SelectedItem.ToString() ?? "";
+                Properties.Settings.Default.Save();
             }
         }
 
@@ -55,6 +109,22 @@ namespace cs_ydl
         private void updateBtn_Click(object sender, EventArgs e)
         {
             RunYtdlp("-U");
+        }
+
+        // ペーストボタン
+        private void pasteBtn_Click(object sender, EventArgs e)
+        {
+            if (Clipboard.ContainsText())
+            {
+                urlTextBox.Text = Clipboard.GetText();
+            }
+        }
+
+        // リセットボタン
+        private void urlResetBtn_Click(object sender, EventArgs e)
+        {
+            urlTextBox.Clear();
+            urlTextBox.Focus();
         }
 
         // チェックボックスで保存先有効化
@@ -96,7 +166,7 @@ namespace cs_ydl
         {
             string url = urlTextBox.Text.Trim();
             string savePath = savePathTextBox.Text.Trim();
-            string? config = confCmbBx.SelectedItem?.ToString();
+            string? configName = confCmbBx.SelectedItem?.ToString();
             if (string.IsNullOrWhiteSpace(url))
             {
                 MessageBox.Show("URLを入力してください");
@@ -111,9 +181,11 @@ namespace cs_ydl
 
             string args = "";
 
-            if (!string.IsNullOrWhiteSpace(config))
+            if (!string.IsNullOrWhiteSpace(configName))
             {
-                args += $"--config-location \"{config}\" ";
+                string fullConfigPath = Path.Combine(Properties.Settings.Default.ConfigFolderPath, configName);
+
+                args += $"--config-location \"{fullConfigPath}\" ";
             }
 
             if (cUseCustomPath.Checked && !string.IsNullOrWhiteSpace(savePath))
@@ -143,7 +215,7 @@ namespace cs_ydl
             {
                 ProcessStartInfo psi = new ProcessStartInfo
                 {
-                    FileName = "C://yt-dlp//yt-dlp.exe",
+                    FileName = Path.Combine(Application.StartupPath, "yt-dlp.exe"),
                     Arguments = arguments,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -169,7 +241,5 @@ namespace cs_ydl
                 }
             }
         }
-
-
     }
 }

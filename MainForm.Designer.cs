@@ -40,22 +40,25 @@
             cbDisableMetadata = new CheckBox();
             metadataCheck = new ToolTip(components);
             cbDisableArchive = new CheckBox();
+            pasteBtn = new Button();
+            urlResetBtn = new Button();
+            selectConfigFolderBtn = new Button();
             SuspendLayout();
             // 
             // urlTextBox
             // 
-            urlTextBox.Location = new Point(12, 84);
+            urlTextBox.Location = new Point(12, 80);
             urlTextBox.Name = "urlTextBox";
-            urlTextBox.Size = new Size(417, 27);
+            urlTextBox.Size = new Size(417, 26);
             urlTextBox.TabIndex = 9;
             urlTextBox.KeyDown += urlTextBox_KeyDown;
             // 
             // dlBtn
             // 
             dlBtn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            dlBtn.Location = new Point(435, 49);
+            dlBtn.Location = new Point(435, 80);
             dlBtn.Name = "dlBtn";
-            dlBtn.Size = new Size(82, 62);
+            dlBtn.Size = new Size(82, 59);
             dlBtn.TabIndex = 8;
             dlBtn.Text = "DL";
             dlBtn.Click += dlBtn_Click;
@@ -64,26 +67,27 @@
             // 
             confCmbBx.DropDownStyle = ComboBoxStyle.DropDownList;
             confCmbBx.FormattingEnabled = true;
-            confCmbBx.Location = new Point(12, 49);
+            confCmbBx.Location = new Point(12, 112);
             confCmbBx.Name = "confCmbBx";
-            confCmbBx.Size = new Size(417, 28);
+            confCmbBx.Size = new Size(374, 27);
             confCmbBx.TabIndex = 2;
+            confCmbBx.SelectedIndexChanged += confCmbBx_SelectedIndexChanged;
             // 
             // savePathTextBox
             // 
             savePathTextBox.Enabled = false;
-            savePathTextBox.Location = new Point(107, 239);
+            savePathTextBox.Location = new Point(107, 227);
             savePathTextBox.Name = "savePathTextBox";
             savePathTextBox.ReadOnly = true;
-            savePathTextBox.Size = new Size(365, 27);
+            savePathTextBox.Size = new Size(365, 26);
             savePathTextBox.TabIndex = 3;
             // 
             // browseBtn
             // 
             browseBtn.Enabled = false;
-            browseBtn.Location = new Point(478, 242);
+            browseBtn.Location = new Point(478, 230);
             browseBtn.Name = "browseBtn";
-            browseBtn.Size = new Size(39, 24);
+            browseBtn.Size = new Size(39, 23);
             browseBtn.TabIndex = 4;
             browseBtn.Text = "...";
             browseBtn.UseVisualStyleBackColor = true;
@@ -92,9 +96,9 @@
             // cUseCustomPath
             // 
             cUseCustomPath.AutoSize = true;
-            cUseCustomPath.Location = new Point(12, 242);
+            cUseCustomPath.Location = new Point(12, 230);
             cUseCustomPath.Name = "cUseCustomPath";
-            cUseCustomPath.Size = new Size(95, 24);
+            cUseCustomPath.Size = new Size(89, 23);
             cUseCustomPath.TabIndex = 5;
             cUseCustomPath.Text = "パスを指定";
             cUseCustomPath.UseVisualStyleBackColor = true;
@@ -102,9 +106,9 @@
             // 
             // updateBtn
             // 
-            updateBtn.Location = new Point(390, 13);
+            updateBtn.Location = new Point(390, 12);
             updateBtn.Name = "updateBtn";
-            updateBtn.Size = new Size(127, 31);
+            updateBtn.Size = new Size(127, 29);
             updateBtn.TabIndex = 6;
             updateBtn.Text = "yt-dlpをアップデート";
             updateBtn.UseVisualStyleBackColor = true;
@@ -113,20 +117,20 @@
             // logTextBox
             // 
             logTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            logTextBox.Location = new Point(12, 273);
+            logTextBox.Location = new Point(12, 259);
             logTextBox.Name = "logTextBox";
             logTextBox.ReadOnly = true;
             logTextBox.ScrollBars = RichTextBoxScrollBars.Vertical;
-            logTextBox.Size = new Size(505, 369);
+            logTextBox.Size = new Size(505, 351);
             logTextBox.TabIndex = 7;
             logTextBox.Text = "";
             // 
             // cbDisableMetadata
             // 
             cbDisableMetadata.AutoSize = true;
-            cbDisableMetadata.Location = new Point(12, 212);
+            cbDisableMetadata.Location = new Point(12, 201);
             cbDisableMetadata.Name = "cbDisableMetadata";
-            cbDisableMetadata.Size = new Size(175, 24);
+            cbDisableMetadata.Size = new Size(164, 23);
             cbDisableMetadata.TabIndex = 10;
             cbDisableMetadata.Text = "メタデータを埋め込まない";
             metadataCheck.SetToolTip(cbDisableMetadata, "※ このオプションは .conf に --embed-metadata がある場合でも無効化できます");
@@ -135,19 +139,52 @@
             // cbDisableArchive
             // 
             cbDisableArchive.AutoSize = true;
-            cbDisableArchive.Location = new Point(12, 182);
+            cbDisableArchive.Location = new Point(12, 173);
             cbDisableArchive.Name = "cbDisableArchive";
-            cbDisableArchive.Size = new Size(176, 24);
+            cbDisableArchive.Size = new Size(157, 23);
             cbDisableArchive.TabIndex = 10;
-            cbDisableArchive.Text = "Arvchiveに書き込まない";
+            cbDisableArchive.Text = "Archiveに書き込まない";
             cbDisableArchive.UseVisualStyleBackColor = true;
             cbDisableArchive.CheckedChanged += cbDisableArchive_CheckedChanged;
             // 
+            // pasteBtn
+            // 
+            pasteBtn.Location = new Point(338, 45);
+            pasteBtn.Name = "pasteBtn";
+            pasteBtn.Size = new Size(91, 29);
+            pasteBtn.TabIndex = 11;
+            pasteBtn.Text = "ペースト";
+            pasteBtn.UseVisualStyleBackColor = true;
+            pasteBtn.Click += pasteBtn_Click;
+            // 
+            // urlResetBtn
+            // 
+            urlResetBtn.Location = new Point(241, 45);
+            urlResetBtn.Name = "urlResetBtn";
+            urlResetBtn.Size = new Size(91, 29);
+            urlResetBtn.TabIndex = 12;
+            urlResetBtn.Text = "リセット";
+            urlResetBtn.UseVisualStyleBackColor = true;
+            urlResetBtn.Click += urlResetBtn_Click;
+            // 
+            // selectConfigFolderBtn
+            // 
+            selectConfigFolderBtn.Location = new Point(390, 112);
+            selectConfigFolderBtn.Name = "selectConfigFolderBtn";
+            selectConfigFolderBtn.Size = new Size(39, 23);
+            selectConfigFolderBtn.TabIndex = 13;
+            selectConfigFolderBtn.Text = "...";
+            selectConfigFolderBtn.UseVisualStyleBackColor = true;
+            selectConfigFolderBtn.Click += selectConfigFolderBtn_Click;
+            // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(528, 655);
+            ClientSize = new Size(528, 622);
+            Controls.Add(selectConfigFolderBtn);
+            Controls.Add(urlResetBtn);
+            Controls.Add(pasteBtn);
             Controls.Add(cbDisableArchive);
             Controls.Add(cbDisableMetadata);
             Controls.Add(logTextBox);
@@ -178,5 +215,8 @@
         private CheckBox cbDisableMetadata;
         private ToolTip metadataCheck;
         private CheckBox cbDisableArchive;
+        private Button pasteBtn;
+        private Button urlResetBtn;
+        private Button selectConfigFolderBtn;
     }
 }
