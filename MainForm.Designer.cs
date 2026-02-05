@@ -46,6 +46,7 @@
             selectConfigFolderBtn = new Button();
             toolStrip1 = new ToolStrip();
             settingToolStripBtn = new ToolStripButton();
+            aboutToolStripBtn = new ToolStripButton();
             toolStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -183,7 +184,7 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { settingToolStripBtn });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { settingToolStripBtn, aboutToolStripBtn });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(528, 26);
@@ -199,6 +200,16 @@
             settingToolStripBtn.Size = new Size(41, 23);
             settingToolStripBtn.Text = "設定";
             settingToolStripBtn.Click += settingToolStripBtn_Click;
+            // 
+            // aboutToolStripBtn
+            // 
+            aboutToolStripBtn.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            aboutToolStripBtn.Image = (Image)resources.GetObject("aboutToolStripBtn.Image");
+            aboutToolStripBtn.ImageTransparentColor = Color.Magenta;
+            aboutToolStripBtn.Name = "aboutToolStripBtn";
+            aboutToolStripBtn.Size = new Size(91, 23);
+            aboutToolStripBtn.Text = "バージョン情報";
+            aboutToolStripBtn.Click += aboutToolStripBtn_Click;
             // 
             // MainForm
             // 
@@ -246,5 +257,6 @@
         private Button selectConfigFolderBtn;
         private ToolStrip toolStrip1;
         private ToolStripButton settingToolStripBtn;
+        private ToolStripButton aboutToolStripBtn;
     }
 }

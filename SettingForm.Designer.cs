@@ -56,7 +56,7 @@
             // 
             // saveBtn
             // 
-            saveBtn.Location = new Point(225, 408);
+            saveBtn.Location = new Point(225, 137);
             saveBtn.Name = "saveBtn";
             saveBtn.Size = new Size(111, 30);
             saveBtn.TabIndex = 2;
@@ -77,7 +77,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(348, 450);
+            ClientSize = new Size(348, 179);
             Controls.Add(ytdlpPathLabel);
             Controls.Add(saveBtn);
             Controls.Add(browseYtdlpBtn);

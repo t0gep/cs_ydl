@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace cs_ydl
 {
@@ -8,14 +9,13 @@ namespace cs_ydl
         {
             InitializeComponent();
 
-
             LoadLastSavePath(); // 前回のパスを読み込む
             LoadConfigs(); // configのロード
 
             savePathTextBox.Enabled = false;
             browseBtn.Enabled = false;
 
-            CheckYtdlpPath();
+            //CheckYtdlpPath();
         }
 
         // 保存と読込用
@@ -112,19 +112,27 @@ namespace cs_ydl
         {
             using (SettingForm settingForm = new SettingForm())
             {
-                settingForm.ShowDialog();
-
-                //if (settingForm.ShowDialog() == DialogResult.OK)
-                //{
-                //    // 設定が保存された後の処理（必要なら）
-                //}
+                if (settingForm.ShowDialog() == DialogResult.OK)
+                {
+                    CheckYtdlpPath();
+                }
             }
         }
 
-        // アップデートボタン
-        private void updateBtn_Click(object sender, EventArgs e)
+        // バージョン情報ツールストリップボタン
+        private void aboutToolStripBtn_Click(object sender, EventArgs e)
         {
-            RunYtdlp("-U");
+            //using (var about = new AboutForm())
+            //{
+            //    about.ShowDialog();
+            //}
+        }
+
+
+        // アップデートボタン
+        private async void updateBtn_Click(object sender, EventArgs e)
+        {
+            await RunYtdlpAsync("-U");
         }
 
         // ペーストボタン
@@ -171,14 +179,28 @@ namespace cs_ydl
         }
 
         // ダウンロードボタン or enterキー
-        private void dlBtn_Click(Object sender, EventArgs e) => StartDL();
-        private void urlTextBox_KeyDown(object sender, KeyEventArgs e)
+        private async void dlBtn_Click(Object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter) StartDL();
+            try
+            {
+                await StartDLAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "例外", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private async void urlTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // ビープ音を防止
+                await StartDLAsync();
+            }
         }
 
         // 実行メイン処理
-        private void StartDL()
+        private async Task StartDLAsync()
         {
             string url = urlTextBox.Text.Trim();
             string savePath = savePathTextBox.Text.Trim();
@@ -195,38 +217,40 @@ namespace cs_ydl
                 return;
             }
 
-            string args = "";
+            var args = new List<string>();
 
             if (!string.IsNullOrWhiteSpace(configName))
             {
                 string fullConfigPath = Path.Combine(Properties.Settings.Default.ConfigFolderPath, configName);
 
-                args += $"--config-location \"{fullConfigPath}\" ";
+                args.Add($"--config-location \"{fullConfigPath}\"");
             }
 
             if (cUseCustomPath.Checked && !string.IsNullOrWhiteSpace(savePath))
             {
-                args += $"-P \"{savePath}\" ";
+                args.Add($"-P \"{savePath}\"");
             }
 
             if (cbDisableMetadata.Checked)
             {
-                args += "--no-embed-metadata ";
+                args.Add("--no-embed-metadata");
             }
 
             if (cbDisableArchive.Checked)
             {
-                args += "--no-download-archive ";
+                args.Add("--no-embed-rchive");
             }
 
-            args += $"\"{url}\" ";
+            args.Add($"\"{url}\"");
 
-            RunYtdlp(args);
+            string argLine = string.Join(" ", args);
+            await RunYtdlpAsync(argLine);
         }
 
         // yt-dlp実行関数　＋　ログ出力
-        private void RunYtdlp(string arguments)
+        private async Task RunYtdlpAsync(string arguments)
         {
+            dlBtn.Enabled = false;
             try
             {
                 string exePath = Properties.Settings.Default.YtDlpPath;
@@ -236,32 +260,51 @@ namespace cs_ydl
                     throw new FileNotFoundException("yt-dlp.exe が見つかりません。設定画面でパスを指定してください。");
                 }
 
-                ProcessStartInfo psi = new ProcessStartInfo
+                var psi = new ProcessStartInfo
                 {
                     FileName = exePath,
                     Arguments = arguments,
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
 
-                Process? proc = Process.Start(psi);
-                if (proc == null)
+                using var proc = Process.Start(psi)!;
+
+                string stdout = await proc.StandardOutput.ReadToEndAsync();
+                string stderr = await proc.StandardError.ReadToEndAsync();
+
+                await proc.WaitForExitAsync();
+
+                logTextBox.AppendText(stdout);
+
+                if (proc.ExitCode == 0)
                 {
-                    throw new InvalidOperationException("yt-dlp の起動に失敗しました。");
+                    logTextBox.AppendText("ダウンロード完了\n");
+                    MessageBox.Show("ダウンロードが完了しました。", "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                using (proc)
+                else
                 {
-                    string output = proc.StandardOutput.ReadToEnd();
-                    proc.WaitForExit();
-                    logTextBox.AppendText(output + Environment.NewLine);
+                    if (!string.IsNullOrWhiteSpace(stderr))
+                    {
+                        logTextBox.SelectionColor = Color.Red;
+                        logTextBox.AppendText(stderr);
+                        logTextBox.SelectionColor = logTextBox.ForeColor;
+                    }
+                    MessageBox.Show("エラーが発生しました。ログを確認してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+
             }
             catch (Exception ex)
             {
                 {
-                    MessageBox.Show("エラー： " + ex.Message);
+                    MessageBox.Show(ex.Message, "例外", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+            finally
+            {
+                dlBtn.Enabled = true;
             }
         }
 
@@ -276,7 +319,7 @@ namespace cs_ydl
                     "yt-dlp パス未設定",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
-                
+
                 if (result == DialogResult.Yes)
                 {
                     using (SettingForm settingForm = new SettingForm())
