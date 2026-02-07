@@ -159,6 +159,14 @@ namespace cs_ydl
             browseBtn.Enabled = enabled;
         }
 
+        // チェックボックスで字幕有効化したとき、無効化したときの処理
+        private void cbSubs_CheckedChanged(object sender, EventArgs e)
+        {
+            bool enabled = cbSubs.Checked;
+            cbAutoSubs.Enabled = enabled;
+            cbAutoSubs.Checked = enabled;
+        }
+
         // チェックボックスでArchiveを無効化
         private void cbDisableArchive_CheckedChanged(object sender, EventArgs e)
         {
@@ -231,14 +239,62 @@ namespace cs_ydl
                 args.Add($"-P \"{savePath}\"");
             }
 
-            if (cbDisableMetadata.Checked)
+
+            if (cbOnlyAudio.Checked)
+            {
+                args.Add("-x");
+            }
+
+            if (cbSubs.Checked)
+            {
+                args.Add("--write-subs");
+                args.Add("--sub-lang ja");
+                args.Add("--embed-subs");
+            }
+            if (cbSubs.Checked == false)
+            {
+                args.Add("--no-write-subs");
+                args.Add("--no-embed-subs");
+            }
+            if (cbAutoSubs.Checked)
+            {
+                args.Add("--write-auto-subs");
+            }
+            if (cbAutoSubs.Checked == false)
+            {
+                args.Add("--no-write-auto-subs");
+            }
+
+            if (cbThumbnail.Checked)
+            {
+                args.Add("--embed-thumbnail");
+            }
+            if (cbThumbnail.Checked == false)
+            {
+                args.Add("--no-embed-thumbnail");
+            }
+
+            if (cbMetadata.Checked)
+            {
+                args.Add("--embed-metadata");
+            }
+            if (cbMetadata.Checked == false)
             {
                 args.Add("--no-embed-metadata");
             }
 
             if (cbDisableArchive.Checked)
             {
-                args.Add("--no-embed-rchive");
+                args.Add("--no-download-archive");
+            }
+
+            if (cbComments.Checked)
+            {
+                args.Add("--write-comments");
+            }
+            if (cbComments.Checked == false)
+            {
+                args.Add("--no-write-comments");
             }
 
             args.Add($"\"{url}\"");
@@ -282,7 +338,7 @@ namespace cs_ydl
                 if (proc.ExitCode == 0)
                 {
                     logTextBox.AppendText("ダウンロード完了\n");
-                    MessageBox.Show("ダウンロードが完了しました。", "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("完了しました。", "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {

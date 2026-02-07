@@ -38,15 +38,21 @@
             cUseCustomPath = new CheckBox();
             updateBtn = new Button();
             logTextBox = new RichTextBox();
-            cbDisableMetadata = new CheckBox();
+            cbMetadata = new CheckBox();
             metadataCheck = new ToolTip(components);
             cbDisableArchive = new CheckBox();
+            cbOnlyAudio = new CheckBox();
+            cbThumbnail = new CheckBox();
+            cbSubs = new CheckBox();
+            cbAutoSubs = new CheckBox();
             pasteBtn = new Button();
             urlResetBtn = new Button();
             selectConfigFolderBtn = new Button();
             toolStrip1 = new ToolStrip();
             settingToolStripBtn = new ToolStripButton();
             aboutToolStripBtn = new ToolStripButton();
+            lblConf = new Label();
+            cbComments = new CheckBox();
             toolStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -63,7 +69,7 @@
             dlBtn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             dlBtn.Location = new Point(437, 98);
             dlBtn.Name = "dlBtn";
-            dlBtn.Size = new Size(83, 59);
+            dlBtn.Size = new Size(83, 72);
             dlBtn.TabIndex = 8;
             dlBtn.Text = "DL";
             dlBtn.Click += dlBtn_Click;
@@ -72,7 +78,7 @@
             // 
             confCmbBx.DropDownStyle = ComboBoxStyle.DropDownList;
             confCmbBx.FormattingEnabled = true;
-            confCmbBx.Location = new Point(12, 130);
+            confCmbBx.Location = new Point(12, 146);
             confCmbBx.Name = "confCmbBx";
             confCmbBx.Size = new Size(374, 27);
             confCmbBx.TabIndex = 2;
@@ -81,16 +87,16 @@
             // savePathTextBox
             // 
             savePathTextBox.Enabled = false;
-            savePathTextBox.Location = new Point(107, 227);
+            savePathTextBox.Location = new Point(98, 353);
             savePathTextBox.Name = "savePathTextBox";
             savePathTextBox.ReadOnly = true;
-            savePathTextBox.Size = new Size(365, 26);
+            savePathTextBox.Size = new Size(377, 26);
             savePathTextBox.TabIndex = 3;
             // 
             // browseBtn
             // 
             browseBtn.Enabled = false;
-            browseBtn.Location = new Point(478, 230);
+            browseBtn.Location = new Point(481, 356);
             browseBtn.Name = "browseBtn";
             browseBtn.Size = new Size(39, 23);
             browseBtn.TabIndex = 4;
@@ -101,7 +107,7 @@
             // cUseCustomPath
             // 
             cUseCustomPath.AutoSize = true;
-            cUseCustomPath.Location = new Point(12, 230);
+            cUseCustomPath.Location = new Point(12, 356);
             cUseCustomPath.Name = "cUseCustomPath";
             cUseCustomPath.Size = new Size(89, 23);
             cUseCustomPath.TabIndex = 5;
@@ -122,35 +128,90 @@
             // logTextBox
             // 
             logTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            logTextBox.Location = new Point(12, 259);
+            logTextBox.Location = new Point(12, 385);
             logTextBox.Name = "logTextBox";
             logTextBox.ReadOnly = true;
             logTextBox.ScrollBars = RichTextBoxScrollBars.Vertical;
-            logTextBox.Size = new Size(505, 351);
+            logTextBox.Size = new Size(505, 330);
             logTextBox.TabIndex = 7;
             logTextBox.Text = "";
             // 
-            // cbDisableMetadata
+            // cbMetadata
             // 
-            cbDisableMetadata.AutoSize = true;
-            cbDisableMetadata.Location = new Point(12, 201);
-            cbDisableMetadata.Name = "cbDisableMetadata";
-            cbDisableMetadata.Size = new Size(164, 23);
-            cbDisableMetadata.TabIndex = 10;
-            cbDisableMetadata.Text = "メタデータを埋め込まない";
-            metadataCheck.SetToolTip(cbDisableMetadata, "※ このオプションは .conf に --embed-metadata がある場合でも無効化できます");
-            cbDisableMetadata.UseVisualStyleBackColor = true;
+            cbMetadata.AutoSize = true;
+            cbMetadata.Checked = true;
+            cbMetadata.CheckState = CheckState.Checked;
+            cbMetadata.Location = new Point(12, 266);
+            cbMetadata.Name = "cbMetadata";
+            cbMetadata.Size = new Size(141, 23);
+            cbMetadata.TabIndex = 10;
+            cbMetadata.Text = "メタデータを埋め込む";
+            metadataCheck.SetToolTip(cbMetadata, "メタデータを埋め込みます。これはチャプターとinfojsonを含みます。");
+            cbMetadata.UseVisualStyleBackColor = true;
             // 
             // cbDisableArchive
             // 
             cbDisableArchive.AutoSize = true;
-            cbDisableArchive.Location = new Point(12, 173);
+            cbDisableArchive.Location = new Point(12, 295);
             cbDisableArchive.Name = "cbDisableArchive";
             cbDisableArchive.Size = new Size(157, 23);
             cbDisableArchive.TabIndex = 10;
             cbDisableArchive.Text = "Archiveに書き込まない";
+            metadataCheck.SetToolTip(cbDisableArchive, "--download-archive [FILE]が有効でもArchiveに書き込みません");
             cbDisableArchive.UseVisualStyleBackColor = true;
             cbDisableArchive.CheckedChanged += cbDisableArchive_CheckedChanged;
+            // 
+            // cbOnlyAudio
+            // 
+            cbOnlyAudio.AutoSize = true;
+            cbOnlyAudio.Location = new Point(12, 179);
+            cbOnlyAudio.Name = "cbOnlyAudio";
+            cbOnlyAudio.Size = new Size(79, 23);
+            cbOnlyAudio.TabIndex = 10;
+            cbOnlyAudio.Text = "音声のみ";
+            metadataCheck.SetToolTip(cbOnlyAudio, "音声のみを取得します");
+            cbOnlyAudio.UseVisualStyleBackColor = true;
+            cbOnlyAudio.CheckedChanged += cbDisableArchive_CheckedChanged;
+            // 
+            // cbThumbnail
+            // 
+            cbThumbnail.AutoSize = true;
+            cbThumbnail.Checked = true;
+            cbThumbnail.CheckState = CheckState.Checked;
+            cbThumbnail.Location = new Point(12, 237);
+            cbThumbnail.Name = "cbThumbnail";
+            cbThumbnail.Size = new Size(144, 23);
+            cbThumbnail.TabIndex = 10;
+            cbThumbnail.Text = "サムネイルを埋め込む";
+            metadataCheck.SetToolTip(cbThumbnail, "サムネイルを埋め込みます");
+            cbThumbnail.UseVisualStyleBackColor = true;
+            // 
+            // cbSubs
+            // 
+            cbSubs.AutoSize = true;
+            cbSubs.Checked = true;
+            cbSubs.CheckState = CheckState.Checked;
+            cbSubs.Location = new Point(12, 208);
+            cbSubs.Name = "cbSubs";
+            cbSubs.Size = new Size(117, 23);
+            cbSubs.TabIndex = 10;
+            cbSubs.Text = "字幕を埋め込む";
+            metadataCheck.SetToolTip(cbSubs, "日本語の字幕を埋め込みます。");
+            cbSubs.UseVisualStyleBackColor = true;
+            cbSubs.CheckedChanged += cbSubs_CheckedChanged;
+            // 
+            // cbAutoSubs
+            // 
+            cbAutoSubs.AutoSize = true;
+            cbAutoSubs.Checked = true;
+            cbAutoSubs.CheckState = CheckState.Checked;
+            cbAutoSubs.Location = new Point(135, 208);
+            cbAutoSubs.Name = "cbAutoSubs";
+            cbAutoSubs.Size = new Size(145, 23);
+            cbAutoSubs.TabIndex = 10;
+            cbAutoSubs.Text = "自動字幕も埋め込む";
+            metadataCheck.SetToolTip(cbAutoSubs, "自動字幕を埋め込みます。");
+            cbAutoSubs.UseVisualStyleBackColor = true;
             // 
             // pasteBtn
             // 
@@ -174,7 +235,7 @@
             // 
             // selectConfigFolderBtn
             // 
-            selectConfigFolderBtn.Location = new Point(392, 134);
+            selectConfigFolderBtn.Location = new Point(392, 147);
             selectConfigFolderBtn.Name = "selectConfigFolderBtn";
             selectConfigFolderBtn.Size = new Size(39, 23);
             selectConfigFolderBtn.TabIndex = 13;
@@ -211,17 +272,44 @@
             aboutToolStripBtn.Text = "バージョン情報";
             aboutToolStripBtn.Click += aboutToolStripBtn_Click;
             // 
+            // lblConf
+            // 
+            lblConf.AutoSize = true;
+            lblConf.Location = new Point(12, 125);
+            lblConf.Name = "lblConf";
+            lblConf.Size = new Size(77, 19);
+            lblConf.TabIndex = 15;
+            lblConf.Text = ".confの選択";
+            // 
+            // cbComments
+            // 
+            cbComments.AutoSize = true;
+            cbComments.Location = new Point(12, 324);
+            cbComments.Name = "cbComments";
+            cbComments.Size = new Size(129, 23);
+            cbComments.TabIndex = 10;
+            cbComments.Text = "コメントを書き込む";
+            metadataCheck.SetToolTip(cbComments, "動画コメントを取得し、JSONファイルに書き込みます");
+            cbComments.UseVisualStyleBackColor = true;
+            cbComments.CheckedChanged += cbDisableArchive_CheckedChanged;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(528, 622);
+            ClientSize = new Size(528, 727);
+            Controls.Add(lblConf);
             Controls.Add(toolStrip1);
             Controls.Add(selectConfigFolderBtn);
             Controls.Add(urlResetBtn);
             Controls.Add(pasteBtn);
+            Controls.Add(cbOnlyAudio);
+            Controls.Add(cbAutoSubs);
+            Controls.Add(cbSubs);
+            Controls.Add(cbThumbnail);
+            Controls.Add(cbComments);
             Controls.Add(cbDisableArchive);
-            Controls.Add(cbDisableMetadata);
+            Controls.Add(cbMetadata);
             Controls.Add(logTextBox);
             Controls.Add(updateBtn);
             Controls.Add(cUseCustomPath);
@@ -249,7 +337,7 @@
         private CheckBox cUseCustomPath;
         private Button updateBtn;
         private RichTextBox logTextBox;
-        private CheckBox cbDisableMetadata;
+        private CheckBox cbMetadata;
         private ToolTip metadataCheck;
         private CheckBox cbDisableArchive;
         private Button pasteBtn;
@@ -258,5 +346,11 @@
         private ToolStrip toolStrip1;
         private ToolStripButton settingToolStripBtn;
         private ToolStripButton aboutToolStripBtn;
+        private CheckBox cbOnlyAudio;
+        private Label lblConf;
+        private CheckBox cbThumbnail;
+        private CheckBox cbSubs;
+        private CheckBox cbAutoSubs;
+        private CheckBox cbComments;
     }
 }
