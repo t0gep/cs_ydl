@@ -4,4 +4,4 @@
 
 ### セットアップ
 1. https://github.com/yt-dlp/yt-dlp から yt-dlp.exe をダウンロード
-2. 実行ファイルと同じフォルダに配置
+2. 設定からyt-dlp.exeの場所を指定
