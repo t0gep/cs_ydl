@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text;
 using System.Windows.Forms;
 
 namespace cs_ydl
@@ -12,10 +13,23 @@ namespace cs_ydl
             LoadLastSavePath(); // 前回のパスを読み込む
             LoadConfigs(); // configのロード
 
-            savePathTextBox.Enabled = false;
-            browseBtn.Enabled = false;
+            // 起動時はオプション無効
+            cbUseOptions.Checked = false;
+
+            // UIを同期
+            ApplyOptionUiState();
 
             //CheckYtdlpPath();
+        }
+
+        private void ApplyOptionUiState()
+        {
+            bool optionsEnabled = cbUseOptions.Checked;
+
+            grpMetadata.Enabled = optionsEnabled;
+            grpArchive.Enabled = optionsEnabled;
+            grpPath.Enabled = optionsEnabled;
+            cmbMode.Enabled = optionsEnabled;
         }
 
         // 保存と読込用
@@ -144,12 +158,25 @@ namespace cs_ydl
             }
         }
 
-        // リセットボタン
+        // URLボックスリセットボタン
         private void urlResetBtn_Click(object sender, EventArgs e)
         {
             urlTextBox.Clear();
             urlTextBox.Focus();
         }
+
+        // ログリセットボタン
+        private void btnLogRest_Click(object sender, EventArgs e)
+        {
+            logTextBox.Clear();
+        }
+
+        // チェックボックスでオプション有効化
+        private void cbUseOptions_CheckedChanged(object sender, EventArgs e)
+        {
+            ApplyOptionUiState();
+        }
+
 
         // チェックボックスで保存先有効化
         private void cUseCustomPath_CheckedChanged(object sender, EventArgs e)
@@ -162,15 +189,9 @@ namespace cs_ydl
         // チェックボックスで字幕有効化したとき、無効化したときの処理
         private void cbSubs_CheckedChanged(object sender, EventArgs e)
         {
-            bool enabled = cbSubs.Checked;
-            cbAutoSubs.Enabled = enabled;
-            cbAutoSubs.Checked = enabled;
-        }
-
-        // チェックボックスでArchiveを無効化
-        private void cbDisableArchive_CheckedChanged(object sender, EventArgs e)
-        {
-
+            bool enabled = cbEmbedSubs.Checked;
+            cbEmbedAutoSubs.Enabled = enabled;
+            cbEmbedAutoSubs.Checked = enabled;
         }
 
         // フォルダ選択
@@ -207,6 +228,7 @@ namespace cs_ydl
             }
         }
 
+
         // 実行メイン処理
         private async Task StartDLAsync()
         {
@@ -225,81 +247,38 @@ namespace cs_ydl
                 return;
             }
 
-            var args = new List<string>();
+            var options = new YtdlpOptions();
 
             if (!string.IsNullOrWhiteSpace(configName))
             {
-                string fullConfigPath = Path.Combine(Properties.Settings.Default.ConfigFolderPath, configName);
 
-                args.Add($"--config-location \"{fullConfigPath}\"");
-            }
-
-            if (cUseCustomPath.Checked && !string.IsNullOrWhiteSpace(savePath))
-            {
-                args.Add($"-P \"{savePath}\"");
+                options.ConfigPath = Path.Combine(Properties.Settings.Default.ConfigFolderPath, configName);
             }
 
+            if (cbUseOptions.Checked)
+            {
+                options.Mode = cmbMode.SelectedIndex switch
+                {
+                    1 => DownloadMode.AudioOnly,
+                    2 => DownloadMode.ThumbnailOnly,
+                    3 => DownloadMode.MetadataOnly,
+                    _ => DownloadMode.Normal
+                };
+                options.EmbedSubs = cbEmbedSubs.Checked;
+                options.EmbedAutoSubs = cbEmbedAutoSubs.Checked;
+                options.EmbedThumbnail = cbEmbedThumbnail.Checked;
+                options.EmbedMetadata = cbEmbedMetadata.Checked;
+                options.WriteComments = cbWriteComments.Checked;
 
-            if (cbOnlyAudio.Checked)
-            {
-                args.Add("-x");
-            }
+                options.DisableArchive = cbDisableArchive.Checked;
 
-            if (cbSubs.Checked)
-            {
-                args.Add("--write-subs");
-                args.Add("--sub-lang ja");
-                args.Add("--embed-subs");
-            }
-            if (cbSubs.Checked == false)
-            {
-                args.Add("--no-write-subs");
-                args.Add("--no-embed-subs");
-            }
-            if (cbAutoSubs.Checked)
-            {
-                args.Add("--write-auto-subs");
-            }
-            if (cbAutoSubs.Checked == false)
-            {
-                args.Add("--no-write-auto-subs");
+                options.UseCustomPath = cUseCustomPath.Checked;
+                options.SavePath = savePathTextBox.Text;
             }
 
-            if (cbThumbnail.Checked)
-            {
-                args.Add("--embed-thumbnail");
-            }
-            if (cbThumbnail.Checked == false)
-            {
-                args.Add("--no-embed-thumbnail");
-            }
+            var argsList = options.BuildArguments(url);
+            string argLine = string.Join(" ", argsList.Select(a => a.Contains(' ') ? $"\"{a}\"" : a));
 
-            if (cbMetadata.Checked)
-            {
-                args.Add("--embed-metadata");
-            }
-            if (cbMetadata.Checked == false)
-            {
-                args.Add("--no-embed-metadata");
-            }
-
-            if (cbDisableArchive.Checked)
-            {
-                args.Add("--no-download-archive");
-            }
-
-            if (cbComments.Checked)
-            {
-                args.Add("--write-comments");
-            }
-            if (cbComments.Checked == false)
-            {
-                args.Add("--no-write-comments");
-            }
-
-            args.Add($"\"{url}\"");
-
-            string argLine = string.Join(" ", args);
             await RunYtdlpAsync(argLine);
         }
 
@@ -385,5 +364,6 @@ namespace cs_ydl
                 }
             }
         }
+
     }
 }
