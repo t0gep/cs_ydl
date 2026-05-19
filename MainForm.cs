@@ -121,6 +121,27 @@ namespace cs_ydl
             }
         }
 
+        // ファイルドロップダウン
+        // ファイル/yt-dlpをアップデートボタン
+        private async void fileToolStripMenuItemUpdataYdl_Click(object sender, EventArgs e)
+        {
+            await RunYtdlpAsync("-U");
+        }
+
+        // ファイル/yt-dlpをアップデート(nightly)ボタン
+        private async void fileToolStripMenuItemUpdataYdlNightly_Click(object sender, EventArgs e)
+        {
+            await RunYtdlpAsync("--update-to nightly");
+        }
+
+        // ファイル/終了ボタン
+        private void fileToolStripMenuItemExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+
+
         // 設定ツールストリップボタン
         private void settingToolStripBtn_Click(object sender, EventArgs e)
         {
@@ -364,6 +385,7 @@ namespace cs_ydl
                 }
             }
         }
+
 
     }
 }

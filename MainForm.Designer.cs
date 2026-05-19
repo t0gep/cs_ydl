@@ -49,6 +49,11 @@
             urlResetBtn = new Button();
             selectConfigFolderBtn = new Button();
             toolStrip1 = new ToolStrip();
+            fileToolStripDropDownButton = new ToolStripDropDownButton();
+            fileToolStripMenuItemUpdataYdl = new ToolStripMenuItem();
+            fileToolStripMenuItemUpdataYdlNightly = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
+            fileToolStripMenuItemExit = new ToolStripMenuItem();
             settingToolStripBtn = new ToolStripButton();
             aboutToolStripBtn = new ToolStripButton();
             lblConf = new Label();
@@ -254,12 +259,48 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { settingToolStripBtn, aboutToolStripBtn });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripDropDownButton, settingToolStripBtn, aboutToolStripBtn });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(637, 26);
             toolStrip1.TabIndex = 14;
             toolStrip1.Text = "toolStrip1";
+            // 
+            // fileToolStripDropDownButton
+            // 
+            fileToolStripDropDownButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            fileToolStripDropDownButton.DropDownItems.AddRange(new ToolStripItem[] { fileToolStripMenuItemUpdataYdl, fileToolStripMenuItemUpdataYdlNightly, toolStripSeparator1, fileToolStripMenuItemExit });
+            fileToolStripDropDownButton.Image = (Image)resources.GetObject("fileToolStripDropDownButton.Image");
+            fileToolStripDropDownButton.ImageTransparentColor = Color.Magenta;
+            fileToolStripDropDownButton.Name = "fileToolStripDropDownButton";
+            fileToolStripDropDownButton.Size = new Size(63, 23);
+            fileToolStripDropDownButton.Text = "ファイル";
+            // 
+            // fileToolStripMenuItemUpdataYdl
+            // 
+            fileToolStripMenuItemUpdataYdl.Name = "fileToolStripMenuItemUpdataYdl";
+            fileToolStripMenuItemUpdataYdl.Size = new Size(236, 24);
+            fileToolStripMenuItemUpdataYdl.Text = "yt-dlpをアップデート";
+            fileToolStripMenuItemUpdataYdl.Click += fileToolStripMenuItemUpdataYdl_Click;
+            // 
+            // fileToolStripMenuItemUpdataYdlNightly
+            // 
+            fileToolStripMenuItemUpdataYdlNightly.Name = "fileToolStripMenuItemUpdataYdlNightly";
+            fileToolStripMenuItemUpdataYdlNightly.Size = new Size(236, 24);
+            fileToolStripMenuItemUpdataYdlNightly.Text = "yt-dlpをアップデート(nightly)";
+            fileToolStripMenuItemUpdataYdlNightly.Click += fileToolStripMenuItemUpdataYdlNightly_Click;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(233, 6);
+            // 
+            // fileToolStripMenuItemExit
+            // 
+            fileToolStripMenuItemExit.Name = "fileToolStripMenuItemExit";
+            fileToolStripMenuItemExit.Size = new Size(236, 24);
+            fileToolStripMenuItemExit.Text = "終了";
+            fileToolStripMenuItemExit.Click += fileToolStripMenuItemExit_Click;
             // 
             // settingToolStripBtn
             // 
@@ -423,5 +464,10 @@
         private GroupBox grpArchive;
         private GroupBox grpPath;
         private CheckBox cbUseOptions;
+        private ToolStripDropDownButton fileToolStripDropDownButton;
+        private ToolStripMenuItem fileToolStripMenuItemUpdataYdl;
+        private ToolStripMenuItem fileToolStripMenuItemUpdataYdlNightly;
+        private ToolStripMenuItem fileToolStripMenuItemExit;
+        private ToolStripSeparator toolStripSeparator1;
     }
 }
