@@ -1,6 +1,5 @@
-﻿using System.Diagnostics;
-using System.Text;
-using System.Windows.Forms;
+﻿using cs_ydl.Models;
+using cs_ydl.Services;
 
 namespace cs_ydl
 {
@@ -9,6 +8,8 @@ namespace cs_ydl
         public MainForm()
         {
             InitializeComponent();
+
+            InitializeOptionComboBoxes();
 
             LoadLastSavePath(); // 前回のパスを読み込む
             LoadConfigs(); // configのロード
@@ -31,6 +32,15 @@ namespace cs_ydl
             grpPath.Enabled = optionsEnabled;
             cmbMode.Enabled = optionsEnabled;
         }
+
+        // ======= フィールド =======
+        // yt-dlp実行サービス
+        private readonly YtdlpService _ytdlpService = new();
+
+        // ======== コンストラクタ ========
+
+
+        // ======= 初期化関連 =======
 
         // 保存と読込用
         private const string SavePathSettingKey = "LastSavePath";
@@ -91,6 +101,45 @@ namespace cs_ydl
             }
         }
 
+        // オプション取得関数
+        private OptionState GetOptionState(ComboBox comboBox)
+        {
+            return comboBox.SelectedIndex switch
+            {
+                1 => OptionState.Enabled,
+                2 => OptionState.Disabled,
+                _ => OptionState.Default
+            };
+        }
+
+        // オプションコンボボックス初期化
+        private void InitializeOptionComboBoxes()
+        {
+            InitOptionComboBox(cmbEmbedSubs);
+            InitOptionComboBox(cmbEmbedAutoSubs);
+            InitOptionComboBox(cmbEmbedThumbnail);
+            InitOptionComboBox(cmbEmbedMetadata);
+            InitOptionComboBox(cmbWriteComments);
+            InitOptionComboBox(cmbEnableArchive);
+            InitOptionComboBox(cmbUseCustomPath);
+        }
+
+        // オプションコンボボックス初期化関数
+        private void InitOptionComboBox(
+            ComboBox comboBox)
+        {
+            comboBox.Items.Clear();
+
+            comboBox.Items.Add("Configに従う");
+            comboBox.Items.Add("有効");
+            comboBox.Items.Add("無効");
+
+            comboBox.SelectedIndex = 0;
+
+            comboBox.DropDownStyle =
+                ComboBoxStyle.DropDownList;
+        }
+
 
         // configフォルダ選択ボタン
         private void selectConfigFolderBtn_Click(object sender, EventArgs e)
@@ -121,6 +170,8 @@ namespace cs_ydl
             }
         }
 
+        // ======= UIイベント ===========
+
         // ファイルドロップダウン
         // ファイル/yt-dlpをアップデートボタン
         private async void fileToolStripMenuItemUpdataYdl_Click(object sender, EventArgs e)
@@ -139,8 +190,6 @@ namespace cs_ydl
         {
             Application.Exit();
         }
-
-
 
         // 設定ツールストリップボタン
         private void settingToolStripBtn_Click(object sender, EventArgs e)
@@ -198,23 +247,6 @@ namespace cs_ydl
             ApplyOptionUiState();
         }
 
-
-        // チェックボックスで保存先有効化
-        private void cUseCustomPath_CheckedChanged(object sender, EventArgs e)
-        {
-            bool enabled = cUseCustomPath.Checked;
-            savePathTextBox.Enabled = enabled;
-            browseBtn.Enabled = enabled;
-        }
-
-        // チェックボックスで字幕有効化したとき、無効化したときの処理
-        private void cbSubs_CheckedChanged(object sender, EventArgs e)
-        {
-            bool enabled = cbEmbedSubs.Checked;
-            cbEmbedAutoSubs.Enabled = enabled;
-            cbEmbedAutoSubs.Checked = enabled;
-        }
-
         // フォルダ選択
         private void browseBtn_Click(object sender, EventArgs e)
         {
@@ -249,114 +281,217 @@ namespace cs_ydl
             }
         }
 
-
+        // ======== 実行メイン処理 ========
         // 実行メイン処理
         private async Task StartDLAsync()
         {
+            try
+            {
+                DownloadRequest request =
+                    BuildRequestFromUi();
+
+                string arguments =
+                    BuildArguments(request);
+
+                await RunYtdlpAsync(arguments);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "例外",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        // ======== ビルド関数 ========
+        // ダウンロードリクエストビルド関数
+        private string BuildDownloadArguments(DownloadRequest request)
+        {
+            List<string> argsList =
+                request.Options.BuildArguments(request.Url);
+            return string.Join(
+                " ",
+                argsList.Select(
+                    a => a.Contains(' ')
+                    ? $"\"{a}\""
+                    : a
+                    )
+            );
+        }
+
+        // UI取得
+        private DownloadRequest BuildRequestFromUi()
+        {
             string url = urlTextBox.Text.Trim();
-            string savePath = savePathTextBox.Text.Trim();
-            string? configName = confCmbBx.SelectedItem?.ToString();
+
             if (string.IsNullOrWhiteSpace(url))
             {
-                MessageBox.Show("URLを入力してください");
-                return;
+                throw new Exception("URLを入力してください");
             }
 
-            if (cUseCustomPath.Checked && string.IsNullOrWhiteSpace(savePath))
+            return new DownloadRequest
             {
-                MessageBox.Show("保存先を指定してください", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                Url = url,
+
+                Options = BuildOptionsFromUi()
+            };
+        }
+
+        // オプションUI
+        private YtdlpOptions BuildOptionsFromUi()
+        {
+            var options = new YtdlpOptions();
+
+            // オプション無効時はデフォルト返却
+            if (!cbUseOptions.Checked)
+            {
+                return options;
             }
 
-            var options = new YtdlpOptions();
+            // ダウンロードモード
+            options.Mode = cmbMode.SelectedIndex switch
+            {
+                1 => DownloadMode.AudioOnly,
+                2 => DownloadMode.ThumbnailOnly,
+                3 => DownloadMode.MetadataOnly,
+                _ => DownloadMode.Normal
+            };
+
+            // 埋め込み系
+            options.EmbedSubs =
+                GetOptionState(cmbEmbedSubs);
+
+            options.EmbedAutoSubs =
+                GetOptionState(cmbEmbedAutoSubs);
+
+            options.EmbedThumbnail =
+                GetOptionState(cmbEmbedThumbnail);
+
+            options.EmbedMetadata =
+                GetOptionState(cmbEmbedMetadata);
+
+            // コメント保存
+            options.WriteComments =
+                GetOptionState(cmbWriteComments);
+            // archive有効
+            options.EnableArchive =
+                GetOptionState(cmbEnableArchive);
+
+            // 保存先
+            options.UseCustomPath =
+                GetOptionState(cmbUseCustomPath);
+
+            options.SavePath =
+                savePathTextBox.Text.Trim();
+
+            // config
+            string? configName =
+                confCmbBx.SelectedItem?.ToString();
 
             if (!string.IsNullOrWhiteSpace(configName))
             {
-
-                options.ConfigPath = Path.Combine(Properties.Settings.Default.ConfigFolderPath, configName);
+                options.ConfigPath =
+                    Path.Combine(
+                        Properties.Settings.Default.ConfigFolderPath,
+                        configName);
             }
 
-            if (cbUseOptions.Checked)
-            {
-                options.Mode = cmbMode.SelectedIndex switch
-                {
-                    1 => DownloadMode.AudioOnly,
-                    2 => DownloadMode.ThumbnailOnly,
-                    3 => DownloadMode.MetadataOnly,
-                    _ => DownloadMode.Normal
-                };
-                options.EmbedSubs = cbEmbedSubs.Checked;
-                options.EmbedAutoSubs = cbEmbedAutoSubs.Checked;
-                options.EmbedThumbnail = cbEmbedThumbnail.Checked;
-                options.EmbedMetadata = cbEmbedMetadata.Checked;
-                options.WriteComments = cbWriteComments.Checked;
-
-                options.DisableArchive = cbDisableArchive.Checked;
-
-                options.UseCustomPath = cUseCustomPath.Checked;
-                options.SavePath = savePathTextBox.Text;
-            }
-
-            var argsList = options.BuildArguments(url);
-            string argLine = string.Join(" ", argsList.Select(a => a.Contains(' ') ? $"\"{a}\"" : a));
-
-            await RunYtdlpAsync(argLine);
+            return options;
         }
+
+        // コマンドモード取得関数
+        private YtdlpCommandMode GetSelectedMode()
+        {
+            return YtdlpCommandMode.Download;
+        }
+
+        // 引数ビルド関数
+        private string BuildArguments(DownloadRequest request)
+        {
+            YtdlpCommandMode mode =
+                GetSelectedMode();
+
+            return mode switch
+            {
+                YtdlpCommandMode.Download =>
+                    BuildDownloadArguments(request),
+
+                YtdlpCommandMode.Formats =>
+                    $"-F \"{request.Url}\"",
+
+                YtdlpCommandMode.Json =>
+                    $"-J \"{request.Url}\"",
+
+                YtdlpCommandMode.Simulate =>
+                    $"--simulate \"{request.Url}\"",
+
+                _ =>
+                    throw new NotImplementedException()
+            };
+        }
+
 
         // yt-dlp実行関数　＋　ログ出力
         private async Task RunYtdlpAsync(string arguments)
         {
             dlBtn.Enabled = false;
+
             try
             {
                 string exePath = Properties.Settings.Default.YtDlpPath;
 
                 if (string.IsNullOrWhiteSpace(exePath) || !File.Exists(exePath))
                 {
-                    throw new FileNotFoundException("yt-dlp.exe が見つかりません。設定画面でパスを指定してください。");
+                    throw new FileNotFoundException(
+                        "yt-dlp.exe が見つかりません。");
                 }
 
-                var psi = new ProcessStartInfo
+                YtdlpResult result =
+                    await _ytdlpService.RunAsync(
+                        exePath,
+                        arguments);
+
+                logTextBox.AppendText(result.StdOut);
+
+                if (result.ExitCode == 0)
                 {
-                    FileName = exePath,
-                    Arguments = arguments,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
+                    logTextBox.AppendText(
+                        "ダウンロード完了\n");
 
-                using var proc = Process.Start(psi)!;
-
-                string stdout = await proc.StandardOutput.ReadToEndAsync();
-                string stderr = await proc.StandardError.ReadToEndAsync();
-
-                await proc.WaitForExitAsync();
-
-                logTextBox.AppendText(stdout);
-
-                if (proc.ExitCode == 0)
-                {
-                    logTextBox.AppendText("ダウンロード完了\n");
-                    MessageBox.Show("完了しました。", "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        "完了しました。",
+                        "完了",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                 }
                 else
                 {
-                    if (!string.IsNullOrWhiteSpace(stderr))
+                    if (!string.IsNullOrWhiteSpace(result.StdErr))
                     {
                         logTextBox.SelectionColor = Color.Red;
-                        logTextBox.AppendText(stderr);
-                        logTextBox.SelectionColor = logTextBox.ForeColor;
-                    }
-                    MessageBox.Show("エラーが発生しました。ログを確認してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
 
+                        logTextBox.AppendText(result.StdErr);
+
+                        logTextBox.SelectionColor =
+                            logTextBox.ForeColor;
+                    }
+
+                    MessageBox.Show(
+                        "エラーが発生しました。",
+                        "エラー",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
             }
             catch (Exception ex)
             {
-                {
-                    MessageBox.Show(ex.Message, "例外", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show(
+                    ex.Message,
+                    "例外",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
             finally
             {
@@ -385,7 +520,5 @@ namespace cs_ydl
                 }
             }
         }
-
-
     }
 }

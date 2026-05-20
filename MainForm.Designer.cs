@@ -35,16 +35,9 @@
             confCmbBx = new ComboBox();
             savePathTextBox = new TextBox();
             browseBtn = new Button();
-            cUseCustomPath = new CheckBox();
             updateBtn = new Button();
             logTextBox = new RichTextBox();
-            cbEmbedMetadata = new CheckBox();
             metadataCheck = new ToolTip(components);
-            cbDisableArchive = new CheckBox();
-            cbEmbedThumbnail = new CheckBox();
-            cbEmbedSubs = new CheckBox();
-            cbEmbedAutoSubs = new CheckBox();
-            cbWriteComments = new CheckBox();
             pasteBtn = new Button();
             urlResetBtn = new Button();
             selectConfigFolderBtn = new Button();
@@ -59,14 +52,26 @@
             lblConf = new Label();
             btnLogRest = new Button();
             cmbMode = new ComboBox();
-            grpMetadata = new GroupBox();
-            grpArchive = new GroupBox();
             grpPath = new GroupBox();
+            cmbUseCustomPath = new ComboBox();
             cbUseOptions = new CheckBox();
+            cmbEmbedSubs = new ComboBox();
+            cmbEmbedAutoSubs = new ComboBox();
+            cmbEmbedThumbnail = new ComboBox();
+            cmbEmbedMetadata = new ComboBox();
+            cmbWriteComments = new ComboBox();
+            cmbEnableArchive = new ComboBox();
+            grpArchive = new GroupBox();
+            grpMetadata = new GroupBox();
+            lblAutoSubs = new Label();
+            lblComments = new Label();
+            lblMetadata = new Label();
+            lblThumbnail = new Label();
+            lblSubs = new Label();
             toolStrip1.SuspendLayout();
-            grpMetadata.SuspendLayout();
-            grpArchive.SuspendLayout();
             grpPath.SuspendLayout();
+            grpArchive.SuspendLayout();
+            grpMetadata.SuspendLayout();
             SuspendLayout();
             // 
             // urlTextBox
@@ -84,7 +89,7 @@
             dlBtn.Cursor = Cursors.Hand;
             dlBtn.Location = new Point(517, 101);
             dlBtn.Name = "dlBtn";
-            dlBtn.Size = new Size(108, 72);
+            dlBtn.Size = new Size(125, 72);
             dlBtn.TabIndex = 8;
             dlBtn.Text = "DL";
             dlBtn.UseVisualStyleBackColor = false;
@@ -103,16 +108,16 @@
             // savePathTextBox
             // 
             savePathTextBox.Enabled = false;
-            savePathTextBox.Location = new Point(101, 22);
+            savePathTextBox.Location = new Point(127, 22);
             savePathTextBox.Name = "savePathTextBox";
             savePathTextBox.ReadOnly = true;
-            savePathTextBox.Size = new Size(377, 26);
+            savePathTextBox.Size = new Size(452, 26);
             savePathTextBox.TabIndex = 3;
             // 
             // browseBtn
             // 
             browseBtn.Enabled = false;
-            browseBtn.Location = new Point(484, 25);
+            browseBtn.Location = new Point(585, 27);
             browseBtn.Name = "browseBtn";
             browseBtn.Size = new Size(39, 23);
             browseBtn.TabIndex = 4;
@@ -120,22 +125,11 @@
             browseBtn.UseVisualStyleBackColor = true;
             browseBtn.Click += browseBtn_Click;
             // 
-            // cUseCustomPath
-            // 
-            cUseCustomPath.AutoSize = true;
-            cUseCustomPath.Location = new Point(6, 25);
-            cUseCustomPath.Name = "cUseCustomPath";
-            cUseCustomPath.Size = new Size(89, 23);
-            cUseCustomPath.TabIndex = 5;
-            cUseCustomPath.Text = "パスを指定";
-            cUseCustomPath.UseVisualStyleBackColor = true;
-            cUseCustomPath.CheckedChanged += cUseCustomPath_CheckedChanged;
-            // 
             // updateBtn
             // 
-            updateBtn.Location = new Point(384, 29);
+            updateBtn.Location = new Point(517, 63);
             updateBtn.Name = "updateBtn";
-            updateBtn.Size = new Size(127, 29);
+            updateBtn.Size = new Size(125, 29);
             updateBtn.TabIndex = 6;
             updateBtn.Text = "yt-dlpをアップデート";
             updateBtn.UseVisualStyleBackColor = true;
@@ -144,88 +138,13 @@
             // logTextBox
             // 
             logTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            logTextBox.Location = new Point(12, 470);
+            logTextBox.Location = new Point(12, 564);
             logTextBox.Name = "logTextBox";
             logTextBox.ReadOnly = true;
             logTextBox.ScrollBars = RichTextBoxScrollBars.Vertical;
-            logTextBox.Size = new Size(614, 259);
+            logTextBox.Size = new Size(631, 177);
             logTextBox.TabIndex = 7;
             logTextBox.Text = "";
-            // 
-            // cbEmbedMetadata
-            // 
-            cbEmbedMetadata.AutoSize = true;
-            cbEmbedMetadata.Checked = true;
-            cbEmbedMetadata.CheckState = CheckState.Checked;
-            cbEmbedMetadata.Location = new Point(11, 83);
-            cbEmbedMetadata.Name = "cbEmbedMetadata";
-            cbEmbedMetadata.Size = new Size(141, 23);
-            cbEmbedMetadata.TabIndex = 10;
-            cbEmbedMetadata.Text = "メタデータを埋め込む";
-            metadataCheck.SetToolTip(cbEmbedMetadata, "メタデータを埋め込みます。これはチャプターとinfojsonを含みます。");
-            cbEmbedMetadata.UseVisualStyleBackColor = true;
-            // 
-            // cbDisableArchive
-            // 
-            cbDisableArchive.AutoSize = true;
-            cbDisableArchive.Location = new Point(6, 25);
-            cbDisableArchive.Name = "cbDisableArchive";
-            cbDisableArchive.Size = new Size(157, 23);
-            cbDisableArchive.TabIndex = 10;
-            cbDisableArchive.Text = "Archiveに書き込まない";
-            metadataCheck.SetToolTip(cbDisableArchive, "--download-archive [FILE]が有効でもArchiveに書き込みません");
-            cbDisableArchive.UseVisualStyleBackColor = true;
-            // 
-            // cbEmbedThumbnail
-            // 
-            cbEmbedThumbnail.AutoSize = true;
-            cbEmbedThumbnail.Checked = true;
-            cbEmbedThumbnail.CheckState = CheckState.Checked;
-            cbEmbedThumbnail.Location = new Point(11, 54);
-            cbEmbedThumbnail.Name = "cbEmbedThumbnail";
-            cbEmbedThumbnail.Size = new Size(144, 23);
-            cbEmbedThumbnail.TabIndex = 10;
-            cbEmbedThumbnail.Text = "サムネイルを埋め込む";
-            metadataCheck.SetToolTip(cbEmbedThumbnail, "サムネイルを埋め込みます");
-            cbEmbedThumbnail.UseVisualStyleBackColor = true;
-            // 
-            // cbEmbedSubs
-            // 
-            cbEmbedSubs.AutoSize = true;
-            cbEmbedSubs.Checked = true;
-            cbEmbedSubs.CheckState = CheckState.Checked;
-            cbEmbedSubs.Location = new Point(11, 25);
-            cbEmbedSubs.Name = "cbEmbedSubs";
-            cbEmbedSubs.Size = new Size(117, 23);
-            cbEmbedSubs.TabIndex = 10;
-            cbEmbedSubs.Text = "字幕を埋め込む";
-            metadataCheck.SetToolTip(cbEmbedSubs, "日本語の字幕を埋め込みます。");
-            cbEmbedSubs.UseVisualStyleBackColor = true;
-            cbEmbedSubs.CheckedChanged += cbSubs_CheckedChanged;
-            // 
-            // cbEmbedAutoSubs
-            // 
-            cbEmbedAutoSubs.AutoSize = true;
-            cbEmbedAutoSubs.Checked = true;
-            cbEmbedAutoSubs.CheckState = CheckState.Checked;
-            cbEmbedAutoSubs.Location = new Point(134, 25);
-            cbEmbedAutoSubs.Name = "cbEmbedAutoSubs";
-            cbEmbedAutoSubs.Size = new Size(145, 23);
-            cbEmbedAutoSubs.TabIndex = 10;
-            cbEmbedAutoSubs.Text = "自動字幕も埋め込む";
-            metadataCheck.SetToolTip(cbEmbedAutoSubs, "自動字幕を埋め込みます。");
-            cbEmbedAutoSubs.UseVisualStyleBackColor = true;
-            // 
-            // cbWriteComments
-            // 
-            cbWriteComments.AutoSize = true;
-            cbWriteComments.Location = new Point(11, 112);
-            cbWriteComments.Name = "cbWriteComments";
-            cbWriteComments.Size = new Size(129, 23);
-            cbWriteComments.TabIndex = 10;
-            cbWriteComments.Text = "コメントを書き込む";
-            metadataCheck.SetToolTip(cbWriteComments, "動画コメントを取得し、JSONファイルに書き込みます");
-            cbWriteComments.UseVisualStyleBackColor = true;
             // 
             // pasteBtn
             // 
@@ -262,7 +181,7 @@
             toolStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripDropDownButton, settingToolStripBtn, aboutToolStripBtn });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(637, 26);
+            toolStrip1.Size = new Size(654, 26);
             toolStrip1.TabIndex = 14;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -333,7 +252,7 @@
             // 
             // btnLogRest
             // 
-            btnLogRest.Location = new Point(537, 735);
+            btnLogRest.Location = new Point(550, 747);
             btnLogRest.Name = "btnLogRest";
             btnLogRest.Size = new Size(92, 26);
             btnLogRest.TabIndex = 16;
@@ -350,41 +269,25 @@
             cmbMode.Size = new Size(121, 27);
             cmbMode.TabIndex = 17;
             // 
-            // grpMetadata
-            // 
-            grpMetadata.Controls.Add(cbEmbedSubs);
-            grpMetadata.Controls.Add(cbEmbedAutoSubs);
-            grpMetadata.Controls.Add(cbEmbedThumbnail);
-            grpMetadata.Controls.Add(cbEmbedMetadata);
-            grpMetadata.Controls.Add(cbWriteComments);
-            grpMetadata.Location = new Point(12, 263);
-            grpMetadata.Name = "grpMetadata";
-            grpMetadata.Size = new Size(291, 139);
-            grpMetadata.TabIndex = 18;
-            grpMetadata.TabStop = false;
-            grpMetadata.Text = "メタデータ";
-            // 
-            // grpArchive
-            // 
-            grpArchive.Controls.Add(cbDisableArchive);
-            grpArchive.Location = new Point(311, 263);
-            grpArchive.Name = "grpArchive";
-            grpArchive.Size = new Size(200, 92);
-            grpArchive.TabIndex = 19;
-            grpArchive.TabStop = false;
-            grpArchive.Text = "アーカイブ";
-            // 
             // grpPath
             // 
-            grpPath.Controls.Add(cUseCustomPath);
+            grpPath.Controls.Add(cmbUseCustomPath);
             grpPath.Controls.Add(savePathTextBox);
             grpPath.Controls.Add(browseBtn);
-            grpPath.Location = new Point(12, 408);
+            grpPath.Location = new Point(12, 502);
             grpPath.Name = "grpPath";
-            grpPath.Size = new Size(543, 56);
+            grpPath.Size = new Size(630, 56);
             grpPath.TabIndex = 20;
             grpPath.TabStop = false;
             grpPath.Text = "保存フォルダ";
+            // 
+            // cmbUseCustomPath
+            // 
+            cmbUseCustomPath.FormattingEnabled = true;
+            cmbUseCustomPath.Location = new Point(6, 23);
+            cmbUseCustomPath.Name = "cmbUseCustomPath";
+            cmbUseCustomPath.Size = new Size(115, 27);
+            cmbUseCustomPath.TabIndex = 22;
             // 
             // cbUseOptions
             // 
@@ -397,15 +300,137 @@
             cbUseOptions.UseVisualStyleBackColor = true;
             cbUseOptions.CheckedChanged += cbUseOptions_CheckedChanged;
             // 
+            // cmbEmbedSubs
+            // 
+            cmbEmbedSubs.FormattingEnabled = true;
+            cmbEmbedSubs.Location = new Point(74, 25);
+            cmbEmbedSubs.Name = "cmbEmbedSubs";
+            cmbEmbedSubs.Size = new Size(106, 27);
+            cmbEmbedSubs.TabIndex = 22;
+            // 
+            // cmbEmbedAutoSubs
+            // 
+            cmbEmbedAutoSubs.FormattingEnabled = true;
+            cmbEmbedAutoSubs.Location = new Point(270, 25);
+            cmbEmbedAutoSubs.Name = "cmbEmbedAutoSubs";
+            cmbEmbedAutoSubs.Size = new Size(106, 27);
+            cmbEmbedAutoSubs.TabIndex = 22;
+            // 
+            // cmbEmbedThumbnail
+            // 
+            cmbEmbedThumbnail.FormattingEnabled = true;
+            cmbEmbedThumbnail.Location = new Point(74, 58);
+            cmbEmbedThumbnail.Name = "cmbEmbedThumbnail";
+            cmbEmbedThumbnail.Size = new Size(106, 27);
+            cmbEmbedThumbnail.TabIndex = 22;
+            // 
+            // cmbEmbedMetadata
+            // 
+            cmbEmbedMetadata.FormattingEnabled = true;
+            cmbEmbedMetadata.Location = new Point(74, 91);
+            cmbEmbedMetadata.Name = "cmbEmbedMetadata";
+            cmbEmbedMetadata.Size = new Size(106, 27);
+            cmbEmbedMetadata.TabIndex = 22;
+            // 
+            // cmbWriteComments
+            // 
+            cmbWriteComments.FormattingEnabled = true;
+            cmbWriteComments.Location = new Point(74, 124);
+            cmbWriteComments.Name = "cmbWriteComments";
+            cmbWriteComments.Size = new Size(106, 27);
+            cmbWriteComments.TabIndex = 22;
+            // 
+            // cmbEnableArchive
+            // 
+            cmbEnableArchive.FormattingEnabled = true;
+            cmbEnableArchive.Location = new Point(11, 25);
+            cmbEnableArchive.Name = "cmbEnableArchive";
+            cmbEnableArchive.Size = new Size(121, 27);
+            cmbEnableArchive.TabIndex = 22;
+            // 
+            // grpArchive
+            // 
+            grpArchive.Controls.Add(cmbEnableArchive);
+            grpArchive.Location = new Point(12, 435);
+            grpArchive.Name = "grpArchive";
+            grpArchive.Size = new Size(264, 61);
+            grpArchive.TabIndex = 23;
+            grpArchive.TabStop = false;
+            grpArchive.Text = "アーカイブ";
+            // 
+            // grpMetadata
+            // 
+            grpMetadata.Controls.Add(cmbEmbedSubs);
+            grpMetadata.Controls.Add(cmbEmbedAutoSubs);
+            grpMetadata.Controls.Add(cmbWriteComments);
+            grpMetadata.Controls.Add(cmbEmbedThumbnail);
+            grpMetadata.Controls.Add(cmbEmbedMetadata);
+            grpMetadata.Controls.Add(lblAutoSubs);
+            grpMetadata.Controls.Add(lblComments);
+            grpMetadata.Controls.Add(lblMetadata);
+            grpMetadata.Controls.Add(lblThumbnail);
+            grpMetadata.Controls.Add(lblSubs);
+            grpMetadata.Location = new Point(12, 267);
+            grpMetadata.Name = "grpMetadata";
+            grpMetadata.Size = new Size(499, 162);
+            grpMetadata.TabIndex = 24;
+            grpMetadata.TabStop = false;
+            grpMetadata.Text = "メタデータ";
+            // 
+            // lblAutoSubs
+            // 
+            lblAutoSubs.AutoSize = true;
+            lblAutoSubs.Location = new Point(199, 28);
+            lblAutoSubs.Name = "lblAutoSubs";
+            lblAutoSubs.Size = new Size(65, 19);
+            lblAutoSubs.TabIndex = 15;
+            lblAutoSubs.Text = "自動字幕";
+            // 
+            // lblComments
+            // 
+            lblComments.AutoSize = true;
+            lblComments.Location = new Point(6, 127);
+            lblComments.Name = "lblComments";
+            lblComments.Size = new Size(49, 19);
+            lblComments.TabIndex = 15;
+            lblComments.Text = "コメント";
+            // 
+            // lblMetadata
+            // 
+            lblMetadata.AutoSize = true;
+            lblMetadata.Location = new Point(6, 94);
+            lblMetadata.Name = "lblMetadata";
+            lblMetadata.Size = new Size(61, 19);
+            lblMetadata.TabIndex = 15;
+            lblMetadata.Text = "メタデータ";
+            // 
+            // lblThumbnail
+            // 
+            lblThumbnail.AutoSize = true;
+            lblThumbnail.Location = new Point(6, 61);
+            lblThumbnail.Name = "lblThumbnail";
+            lblThumbnail.Size = new Size(64, 19);
+            lblThumbnail.TabIndex = 15;
+            lblThumbnail.Text = "サムネイル";
+            // 
+            // lblSubs
+            // 
+            lblSubs.AutoSize = true;
+            lblSubs.Location = new Point(6, 28);
+            lblSubs.Name = "lblSubs";
+            lblSubs.Size = new Size(37, 19);
+            lblSubs.TabIndex = 15;
+            lblSubs.Text = "字幕";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(637, 773);
+            ClientSize = new Size(654, 785);
+            Controls.Add(grpMetadata);
+            Controls.Add(grpArchive);
             Controls.Add(cbUseOptions);
             Controls.Add(grpPath);
-            Controls.Add(grpArchive);
-            Controls.Add(grpMetadata);
             Controls.Add(cmbMode);
             Controls.Add(btnLogRest);
             Controls.Add(lblConf);
@@ -424,12 +449,11 @@
             Text = "cs_ydl";
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
-            grpMetadata.ResumeLayout(false);
-            grpMetadata.PerformLayout();
-            grpArchive.ResumeLayout(false);
-            grpArchive.PerformLayout();
             grpPath.ResumeLayout(false);
             grpPath.PerformLayout();
+            grpArchive.ResumeLayout(false);
+            grpMetadata.ResumeLayout(false);
+            grpMetadata.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -441,12 +465,9 @@
         private ComboBox confCmbBx;
         private TextBox savePathTextBox;
         private Button browseBtn;
-        private CheckBox cUseCustomPath;
         private Button updateBtn;
         private RichTextBox logTextBox;
-        private CheckBox cbEmbedMetadata;
         private ToolTip metadataCheck;
-        private CheckBox cbDisableArchive;
         private Button pasteBtn;
         private Button urlResetBtn;
         private Button selectConfigFolderBtn;
@@ -454,14 +475,8 @@
         private ToolStripButton settingToolStripBtn;
         private ToolStripButton aboutToolStripBtn;
         private Label lblConf;
-        private CheckBox cbEmbedThumbnail;
-        private CheckBox cbEmbedSubs;
-        private CheckBox cbEmbedAutoSubs;
-        private CheckBox cbWriteComments;
         private Button btnLogRest;
         private ComboBox cmbMode;
-        private GroupBox grpMetadata;
-        private GroupBox grpArchive;
         private GroupBox grpPath;
         private CheckBox cbUseOptions;
         private ToolStripDropDownButton fileToolStripDropDownButton;
@@ -469,5 +484,19 @@
         private ToolStripMenuItem fileToolStripMenuItemUpdataYdlNightly;
         private ToolStripMenuItem fileToolStripMenuItemExit;
         private ToolStripSeparator toolStripSeparator1;
+        private ComboBox cmbEmbedSubs;
+        private ComboBox cmbEmbedAutoSubs;
+        private ComboBox cmbEmbedThumbnail;
+        private ComboBox cmbEmbedMetadata;
+        private ComboBox cmbWriteComments;
+        private ComboBox cmbEnableArchive;
+        private ComboBox cmbUseCustomPath;
+        private GroupBox grpArchive;
+        private GroupBox grpMetadata;
+        private Label lblComments;
+        private Label lblMetadata;
+        private Label lblThumbnail;
+        private Label lblSubs;
+        private Label lblAutoSubs;
     }
 }
