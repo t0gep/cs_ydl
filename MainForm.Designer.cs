@@ -45,6 +45,8 @@
             fileToolStripDropDownButton = new ToolStripDropDownButton();
             fileToolStripMenuItemUpdataYdl = new ToolStripMenuItem();
             fileToolStripMenuItemUpdataYdlNightly = new ToolStripMenuItem();
+            fileToolStripMenuItemEditConfig = new ToolStripMenuItem();
+            fileToolStripMenuItemEditCookie = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             fileToolStripMenuItemExit = new ToolStripMenuItem();
             settingToolStripBtn = new ToolStripButton();
@@ -85,11 +87,11 @@
             // dlBtn
             // 
             dlBtn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            dlBtn.BackColor = SystemColors.Control;
+            dlBtn.BackColor = SystemColors.GradientInactiveCaption;
             dlBtn.Cursor = Cursors.Hand;
-            dlBtn.Location = new Point(517, 101);
+            dlBtn.Location = new Point(419, 179);
             dlBtn.Name = "dlBtn";
-            dlBtn.Size = new Size(125, 72);
+            dlBtn.Size = new Size(93, 82);
             dlBtn.TabIndex = 8;
             dlBtn.Text = "DL";
             dlBtn.UseVisualStyleBackColor = false;
@@ -111,13 +113,13 @@
             savePathTextBox.Location = new Point(127, 22);
             savePathTextBox.Name = "savePathTextBox";
             savePathTextBox.ReadOnly = true;
-            savePathTextBox.Size = new Size(452, 26);
+            savePathTextBox.Size = new Size(321, 26);
             savePathTextBox.TabIndex = 3;
             // 
             // browseBtn
             // 
             browseBtn.Enabled = false;
-            browseBtn.Location = new Point(585, 27);
+            browseBtn.Location = new Point(454, 27);
             browseBtn.Name = "browseBtn";
             browseBtn.Size = new Size(39, 23);
             browseBtn.TabIndex = 4;
@@ -127,7 +129,7 @@
             // 
             // updateBtn
             // 
-            updateBtn.Location = new Point(517, 63);
+            updateBtn.Location = new Point(386, 63);
             updateBtn.Name = "updateBtn";
             updateBtn.Size = new Size(125, 29);
             updateBtn.TabIndex = 6;
@@ -142,13 +144,13 @@
             logTextBox.Name = "logTextBox";
             logTextBox.ReadOnly = true;
             logTextBox.ScrollBars = RichTextBoxScrollBars.Vertical;
-            logTextBox.Size = new Size(631, 177);
+            logTextBox.Size = new Size(500, 187);
             logTextBox.TabIndex = 7;
             logTextBox.Text = "";
             // 
             // pasteBtn
             // 
-            pasteBtn.Location = new Point(420, 63);
+            pasteBtn.Location = new Point(289, 63);
             pasteBtn.Name = "pasteBtn";
             pasteBtn.Size = new Size(91, 29);
             pasteBtn.TabIndex = 11;
@@ -158,7 +160,7 @@
             // 
             // urlResetBtn
             // 
-            urlResetBtn.Location = new Point(323, 63);
+            urlResetBtn.Location = new Point(192, 63);
             urlResetBtn.Name = "urlResetBtn";
             urlResetBtn.Size = new Size(91, 29);
             urlResetBtn.TabIndex = 12;
@@ -181,14 +183,14 @@
             toolStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripDropDownButton, settingToolStripBtn, aboutToolStripBtn });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(654, 26);
+            toolStrip1.Size = new Size(524, 26);
             toolStrip1.TabIndex = 14;
             toolStrip1.Text = "toolStrip1";
             // 
             // fileToolStripDropDownButton
             // 
             fileToolStripDropDownButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            fileToolStripDropDownButton.DropDownItems.AddRange(new ToolStripItem[] { fileToolStripMenuItemUpdataYdl, fileToolStripMenuItemUpdataYdlNightly, toolStripSeparator1, fileToolStripMenuItemExit });
+            fileToolStripDropDownButton.DropDownItems.AddRange(new ToolStripItem[] { fileToolStripMenuItemUpdataYdl, fileToolStripMenuItemUpdataYdlNightly, fileToolStripMenuItemEditConfig, fileToolStripMenuItemEditCookie, toolStripSeparator1, fileToolStripMenuItemExit });
             fileToolStripDropDownButton.Image = (Image)resources.GetObject("fileToolStripDropDownButton.Image");
             fileToolStripDropDownButton.ImageTransparentColor = Color.Magenta;
             fileToolStripDropDownButton.Name = "fileToolStripDropDownButton";
@@ -208,6 +210,20 @@
             fileToolStripMenuItemUpdataYdlNightly.Size = new Size(236, 24);
             fileToolStripMenuItemUpdataYdlNightly.Text = "yt-dlpをアップデート(nightly)";
             fileToolStripMenuItemUpdataYdlNightly.Click += fileToolStripMenuItemUpdataYdlNightly_Click;
+            // 
+            // fileToolStripMenuItemEditConfig
+            // 
+            fileToolStripMenuItemEditConfig.Name = "fileToolStripMenuItemEditConfig";
+            fileToolStripMenuItemEditConfig.Size = new Size(236, 24);
+            fileToolStripMenuItemEditConfig.Text = ".confの編集";
+            fileToolStripMenuItemEditConfig.Click += fileToolStripMenuItemEditConfig_Click;
+            // 
+            // fileToolStripMenuItemEditCookie
+            // 
+            fileToolStripMenuItemEditCookie.Name = "fileToolStripMenuItemEditCookie";
+            fileToolStripMenuItemEditCookie.Size = new Size(236, 24);
+            fileToolStripMenuItemEditCookie.Text = "cookieの作成/編集";
+            fileToolStripMenuItemEditCookie.Click += fileToolStripMenuItemEditCookie_Click;
             // 
             // toolStripSeparator1
             // 
@@ -252,7 +268,7 @@
             // 
             // btnLogRest
             // 
-            btnLogRest.Location = new Point(550, 747);
+            btnLogRest.Location = new Point(419, 757);
             btnLogRest.Name = "btnLogRest";
             btnLogRest.Size = new Size(92, 26);
             btnLogRest.TabIndex = 16;
@@ -276,7 +292,7 @@
             grpPath.Controls.Add(browseBtn);
             grpPath.Location = new Point(12, 502);
             grpPath.Name = "grpPath";
-            grpPath.Size = new Size(630, 56);
+            grpPath.Size = new Size(499, 56);
             grpPath.TabIndex = 20;
             grpPath.TabStop = false;
             grpPath.Text = "保存フォルダ";
@@ -426,7 +442,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(654, 785);
+            ClientSize = new Size(524, 795);
             Controls.Add(grpMetadata);
             Controls.Add(grpArchive);
             Controls.Add(cbUseOptions);
@@ -482,6 +498,8 @@
         private ToolStripDropDownButton fileToolStripDropDownButton;
         private ToolStripMenuItem fileToolStripMenuItemUpdataYdl;
         private ToolStripMenuItem fileToolStripMenuItemUpdataYdlNightly;
+        private ToolStripMenuItem fileToolStripMenuItemEditConfig;
+        private ToolStripMenuItem fileToolStripMenuItemEditCookie;
         private ToolStripMenuItem fileToolStripMenuItemExit;
         private ToolStripSeparator toolStripSeparator1;
         private ComboBox cmbEmbedSubs;

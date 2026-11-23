@@ -1,5 +1,6 @@
 ﻿using cs_ydl.Models;
 using cs_ydl.Services;
+using System.Diagnostics;
 
 namespace cs_ydl
 {
@@ -185,6 +186,105 @@ namespace cs_ydl
             await RunYtdlpAsync("--update-to nightly");
         }
 
+        // ファイル/.confの編集ボタン
+        private void fileToolStripMenuItemEditConfig_Click(object sender, EventArgs e)
+        {
+            string? configName = confCmbBx.SelectedItem?.ToString();
+
+            if (string.IsNullOrWhiteSpace(configName))
+            {
+                MessageBox.Show(
+                    "編集する .conf ファイルを選択してください。",
+                    ".conf 未選択",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            string configPath = Path.Combine(
+                Properties.Settings.Default.ConfigFolderPath,
+                configName);
+
+            if (!File.Exists(configPath))
+            {
+                MessageBox.Show(
+                    "選択された .conf ファイルが見つかりません。",
+                    ".conf が見つかりません",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            OpenInDefaultEditor(configPath);
+        }
+
+        // ファイル/cookieの作成/編集ボタン
+        private void fileToolStripMenuItemEditCookie_Click(object sender, EventArgs e)
+        {
+            string exePath = Properties.Settings.Default.YtDlpPath;
+
+            if (string.IsNullOrWhiteSpace(exePath) || !File.Exists(exePath))
+            {
+                MessageBox.Show(
+                    "yt-dlp.exe が見つかりません。",
+                    "yt-dlp.exe が見つかりません",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            string? exeDirectory = Path.GetDirectoryName(exePath);
+            if (string.IsNullOrWhiteSpace(exeDirectory))
+            {
+                MessageBox.Show(
+                    "yt-dlp.exe の保存先を取得できません。",
+                    "保存先の取得に失敗",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            string cookiePath = Path.Combine(exeDirectory, "cookie.txt");
+
+            try
+            {
+                if (!File.Exists(cookiePath))
+                {
+                    File.WriteAllText(cookiePath, string.Empty);
+                }
+
+                OpenInDefaultEditor(cookiePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "cookie.txt を開けません",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void OpenInDefaultEditor(string path)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = path,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "ファイルを開けません",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
         // ファイル/終了ボタン
         private void fileToolStripMenuItemExit_Click(object sender, EventArgs e)
         {
@@ -344,6 +444,18 @@ namespace cs_ydl
         {
             var options = new YtdlpOptions();
 
+
+            // configだけはオプション無効でも取得する
+            string? configName = confCmbBx.SelectedItem?.ToString();
+
+            if (!string.IsNullOrWhiteSpace(configName))
+            {
+                options.ConfigPath =
+                    Path.Combine(
+                        Properties.Settings.Default.ConfigFolderPath,
+                        configName);
+            }
+
             // オプション無効時はデフォルト返却
             if (!cbUseOptions.Checked)
             {
@@ -385,18 +497,6 @@ namespace cs_ydl
 
             options.SavePath =
                 savePathTextBox.Text.Trim();
-
-            // config
-            string? configName =
-                confCmbBx.SelectedItem?.ToString();
-
-            if (!string.IsNullOrWhiteSpace(configName))
-            {
-                options.ConfigPath =
-                    Path.Combine(
-                        Properties.Settings.Default.ConfigFolderPath,
-                        configName);
-            }
 
             return options;
         }
@@ -460,11 +560,7 @@ namespace cs_ydl
                     logTextBox.AppendText(
                         "ダウンロード完了\n");
 
-                    MessageBox.Show(
-                        "完了しました。",
-                        "完了",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    System.Media.SystemSounds.Asterisk.Play();
                 }
                 else
                 {
@@ -478,11 +574,7 @@ namespace cs_ydl
                             logTextBox.ForeColor;
                     }
 
-                    MessageBox.Show(
-                        "エラーが発生しました。",
-                        "エラー",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    ShowYtdlpFailureDialog(result);
                 }
             }
             catch (Exception ex)
@@ -497,6 +589,30 @@ namespace cs_ydl
             {
                 dlBtn.Enabled = true;
             }
+        }
+
+        private void ShowYtdlpFailureDialog(YtdlpResult result)
+        {
+            string output = string.Join(
+                Environment.NewLine,
+                new[] { result.StdOut, result.StdErr }
+                    .Where(text => !string.IsNullOrWhiteSpace(text)));
+
+            string warningText = GetYtdlpMessages(output, "WARNING");
+            string errorText = GetYtdlpMessages(output, "ERROR");
+
+            using var dialog = new YtdlpFailureForm(warningText, errorText);
+            dialog.ShowDialog(this);
+        }
+
+        private static string GetYtdlpMessages(string output, string level)
+        {
+            return string.Join(
+                Environment.NewLine,
+                output.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None)
+                    .Where(line => line.TrimStart().StartsWith(
+                        level + ":",
+                        StringComparison.OrdinalIgnoreCase)));
         }
 
         // yt-dlpパスチェック関数
