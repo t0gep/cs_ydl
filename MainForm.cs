@@ -244,7 +244,7 @@ namespace cs_ydl
                 return;
             }
 
-            string cookiePath = Path.Combine(exeDirectory, "cookie.txt");
+            string cookiePath = Path.Combine(exeDirectory, "cookies.txt");
 
             try
             {
@@ -259,7 +259,7 @@ namespace cs_ydl
             {
                 MessageBox.Show(
                     ex.Message,
-                    "cookie.txt を開けません",
+                    "cookies.txt を開けません",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
